@@ -1,0 +1,26 @@
+## Project
+
+Gustavi rada: a loyalty program for Rahvaraamat customers. Stack: Next.js, TypeScript, Supabase, Vercel. Deadline: 2026-11-19.
+
+## Workflow
+
+- `development` is the integration branch. Cut every feature branch from it, named `feat/12-points-rail` (type, issue number, slug), and open PRs against it. Only the project owner moves work into `main`: push and merge to `development` at most.
+- Every task starts as a GitHub issue, assigned to a milestone and tracked on the GitHub Project (kanban and timeline views).
+- Commits follow Conventional Commits. Write issues, commits and PRs in English, and product UI text in Estonian.
+- PRs reference their issue with `Closes #12`, but GitHub only auto-closes on merge to `main`, so close the issue by hand when its PR lands on `development`.
+- Finish the hi-fi design before writing feature code. `design/` is the lo-fi reference.
+- Test with Vitest (domain logic, especially points rules) and Playwright (critical flows only), run in GitHub Actions on PRs.
+
+## Agent skills
+
+### Issue tracker
+
+Issues live in GitHub Issues (rakenduste-programmeerimine-2026/RRLoyalty), managed with the `gh` CLI. See `docs/agents/issue-tracker.md`.
+
+### Triage labels
+
+Uses the five default labels: `needs-triage`, `needs-info`, `ready-for-agent`, `ready-for-human`, `wontfix`. See `docs/agents/triage-labels.md`.
+
+### Domain docs
+
+Single-context: one `GLOSSARY.md` and `docs/adr/` at the repo root. See `docs/agents/domain.md`.

@@ -2,6 +2,8 @@
 
 Gustavi rada: a loyalty program for Rahvaraamat customers. Stack: Next.js, TypeScript, Supabase, Vercel. Deadline: 2026-11-19.
 
+Before changing points, perks, name-day or birthday behaviour, read `docs/program-rules.md`. It is the source of truth for the program rules.
+
 ## Workflow
 
 - `development` is the integration branch. Cut every feature branch from it, named `feat/12-points-rail` (type, issue number, slug), and open PRs against it. Only the project owner moves work into `main`: push and merge to `development` at most.

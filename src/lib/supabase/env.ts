@@ -1,5 +1,5 @@
 // The URL and publishable key come from .env.local (see .env.example).
-// Both are safe in the browser. Never put the secret or service_role key here.
+// Both are safe in the browser. The secret key lives only in supabase/admin.ts.
 
 export function supabaseEnv() {
   // Next.js only inlines NEXT_PUBLIC_ variables written out in full like this.

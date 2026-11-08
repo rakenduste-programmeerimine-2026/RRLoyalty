@@ -1,6 +1,6 @@
 // The points engine: pure rules for earning points and opening perks.
-// Rules: docs/program-rules.md. No database code here; the caller (#11)
-// writes the result to points_ledger and perks.
+// Rules: docs/program-rules.md. No database code here; recordPurchase()
+// in purchases.ts writes the result to points_ledger and perks.
 //
 // Works on one lap: lap resets, carry-over past 400 and point expiry are #21.
 // Earning is always 1 point per euro. "Topelt-punktid" (stop 250) opens as a

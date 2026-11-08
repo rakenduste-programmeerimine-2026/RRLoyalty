@@ -1,17 +1,19 @@
-export type Stop = { at: number; label: string };
+/** Matches rail_stops.type in the database. */
+export type StopType = "direct" | "prize_choice" | "code_once";
+export type Stop = { at: number; label: string; type: StopType };
 export type StopState = "open" | "next" | "locked";
 
 export const RAIL_END = 400;
 
 export const STOPS: Stop[] = [
-  { at: 50, label: "Tasuta kuum jook" },
-  { at: 100, label: "5 € kinkekaart või annetus" },
-  { at: 150, label: "Äpp 5 € (uutele)" },
-  { at: 200, label: "5 € kinkekaart või annetus" },
-  { at: 250, label: "Topelt-punktid" },
-  { at: 300, label: "5 € kinkekaart või annetus" },
-  { at: 350, label: "Tasuta pakiautomaat 15 €+" },
-  { at: 400, label: "5 € kinkekaart või annetus" },
+  { at: 50, label: "Tasuta kuum jook", type: "direct" },
+  { at: 100, label: "5 € kinkekaart või annetus", type: "prize_choice" },
+  { at: 150, label: "Äpp 5 € (uutele)", type: "code_once" },
+  { at: 200, label: "5 € kinkekaart või annetus", type: "prize_choice" },
+  { at: 250, label: "Topelt-punktid", type: "direct" },
+  { at: 300, label: "5 € kinkekaart või annetus", type: "prize_choice" },
+  { at: 350, label: "Tasuta pakiautomaat 15 €+", type: "direct" },
+  { at: 400, label: "5 € kinkekaart või annetus", type: "prize_choice" },
 ];
 
 export function nextStop(points: number, stops: Stop[] = STOPS): Stop | undefined {

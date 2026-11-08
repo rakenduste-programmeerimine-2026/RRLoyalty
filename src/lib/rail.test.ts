@@ -28,6 +28,21 @@ describe("stopState", () => {
   });
 });
 
+describe("STOPS", () => {
+  it("matches the stop types in docs/program-rules.md", () => {
+    expect(STOPS.map((stop) => [stop.at, stop.type])).toEqual([
+      [50, "direct"],
+      [100, "prize_choice"],
+      [150, "code_once"],
+      [200, "prize_choice"],
+      [250, "direct"],
+      [300, "prize_choice"],
+      [350, "direct"],
+      [400, "prize_choice"],
+    ]);
+  });
+});
+
 describe("pointsToNext", () => {
   it("counts the points left to the next stop", () => {
     expect(pointsToNext(52)).toBe(48);

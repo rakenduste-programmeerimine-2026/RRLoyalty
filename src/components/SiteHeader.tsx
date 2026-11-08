@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { member, siteLinks } from "@/lib/sample-data";
+import { CartCount } from "./CartCount";
 
 export function SiteHeader() {
   return (
@@ -13,7 +14,7 @@ export function SiteHeader() {
           ))}
         </nav>
         <div className="site-user">
-          {member.name} ▾<small>Ostukorv (0)</small>
+          {member.name} ▾<small><CartCount /></small>
         </div>
       </div>
     </header>

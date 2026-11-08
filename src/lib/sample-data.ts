@@ -7,6 +7,9 @@ export const member = {
   pointsValidUntil: "31.12.2027",
 };
 
+/** The demo member's points before the name-day purchase (see docs/program-rules.md, Demo). */
+export const pointsBeforeNameDayPurchase = 34;
+
 export const nameDayOfferUntil = "12.11.2026";
 export const giftCard = { code: "GUSTAV-7K2M-5EUR", validUntil: "01.12.2026" };
 export const school = "Näidiskooli";

@@ -1,5 +1,5 @@
-import Link from "next/link";
 import { notFound } from "next/navigation";
+import { AddToCartButton } from "@/components/AddToCartButton";
 import { BookCover } from "@/components/BookCover";
 import { Screen } from "@/components/Screen";
 import { formatEur, nameDayPrice } from "@/lib/money";
@@ -20,7 +20,7 @@ export default async function BookPage({ params }: { params: Promise<{ slug: str
     <Screen
       title="Sinu nimekaimud"
       backTo="/nimekaimud"
-      footer={<Link className="btn" href="/ostukorv">Lisa ostukorvi</Link>}
+      footer={<AddToCartButton slug={book.slug} />}
     >
       <BookCover book={book} size="large" />
       <h1>{book.title}</h1>

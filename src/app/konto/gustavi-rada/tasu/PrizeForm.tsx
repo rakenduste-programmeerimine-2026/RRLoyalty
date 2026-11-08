@@ -4,7 +4,7 @@ import { useRouter } from "next/navigation";
 import type { FormEvent } from "react";
 import { school } from "@/lib/sample-data";
 
-export function PrizeForm() {
+export function PrizeForm({ stop }: { stop: number }) {
   const router = useRouter();
 
   function confirmChoice(event: FormEvent<HTMLFormElement>) {
@@ -16,7 +16,7 @@ export function PrizeForm() {
   return (
     <form className="prize" onSubmit={confirmChoice}>
       <div className="screen__body">
-        <h1>Vali oma 100 punkti tasu</h1>
+        <h1>Vali oma {stop} punkti tasu</h1>
         <fieldset>
           <legend className="muted small">Aega valida: 3 päeva</legend>
           <label className="choice">

@@ -54,5 +54,6 @@ export function useCart() {
     add: (slug: string) => write(addToCart(read(), slug)),
     setQty: (slug: string, qty: number) => write(setQty(read(), slug, qty)),
     remove: (slug: string) => write(removeFromCart(read(), slug)),
+    clear: () => write([]),
   };
 }

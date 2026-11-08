@@ -1,19 +1,76 @@
 "use client";
 
 import Link from "next/link";
+import { useRef, useState, useTransition } from "react";
 import { BookCover } from "@/components/BookCover";
-import { NotWiredButton } from "@/components/NotWiredButton";
 import { Screen } from "@/components/Screen";
 import { useCart } from "@/components/useCart";
-import { MAX_QTY, summarizeCart } from "@/lib/cart";
+import { MAX_QTY, summarizeCart, type CartLine } from "@/lib/cart";
 import { formatEur } from "@/lib/money";
-import { RAIL_END, nextStop } from "@/lib/rail";
+import { RAIL_END, STOPS, nextStop } from "@/lib/rail";
 import { nameDayBooks, pointsBeforeNameDayPurchase } from "@/lib/sample-data";
+import { payForCart, type CheckoutState } from "./actions";
 
 const lowerFirst = (text: string) => text.charAt(0).toLocaleLowerCase("et") + text.slice(1);
 
+type Order = Extract<CheckoutState, { ok: true }>;
+
 export function Bag() {
-  const { lines, setQty, remove } = useCart();
+  const { lines, setQty, remove, clear } = useCart();
+  const [order, setOrder] = useState<Order>();
+  const [error, setError] = useState<string>();
+  const [paying, startPaying] = useTransition();
+  // One reference per checkout, reused on a retry of the same cart so it is never recorded twice.
+  const checkout = useRef<{ cart: string; ref: string }>(undefined);
+
+  function pay(cartLines: CartLine[]) {
+    const cart = JSON.stringify(cartLines);
+    if (checkout.current?.cart !== cart) checkout.current = { cart, ref: crypto.randomUUID() };
+    const ref = checkout.current.ref;
+    setError(undefined);
+
+    startPaying(async () => {
+      try {
+        const result: CheckoutState | undefined = await payForCart(cartLines, ref);
+        // A signed-out member is sent to sign-in instead, and no result comes back.
+        if (!result) return;
+        if (result.ok) {
+          checkout.current = undefined;
+          setOrder(result);
+          clear();
+        } else {
+          if (result.newCheckout) checkout.current = undefined;
+          setError(result.error);
+        }
+      } catch {
+        setError("Ühendus katkes. Proovi uuesti.");
+      }
+    });
+  }
+
+  if (order) {
+    const opened = STOPS.filter((stop) => order.openedStops.includes(stop.at));
+    return (
+      <Screen
+        title="Tellimus"
+        footer={
+          <>
+            <Link className="textlink" href="/nimekaimud">Tagasi raamatute juurde</Link>
+            <Link className="btn" href="/konto/gustavi-rada">Vaata Gustavi rada</Link>
+          </>
+        }
+      >
+        <h1>Aitäh, makse õnnestus!</h1>
+        <p className="muted">Tellimus {order.orderNumber} · {formatEur(order.total)}</p>
+        <div className="gain" role="status">
+          <b>+{order.points} punkti Gustavi rajale</b>
+          {opened.map((stop) => (
+            <p key={stop.at}>Jõudsid {stop.at} punkti peatusse: {lowerFirst(stop.label)}.</p>
+          ))}
+        </div>
+      </Screen>
+    );
+  }
 
   if (lines === undefined) {
     return (
@@ -49,7 +106,10 @@ export function Bag() {
       footer={
         <>
           <Link className="textlink" href="/konto/gustavi-rada">Vaata Gustavi rada</Link>
-          <NotWiredButton>Maksa {formatEur(summary.total)}</NotWiredButton>
+          {error && <p className="form-error" role="alert">{error}</p>}
+          <button type="button" className="btn" disabled={paying} onClick={() => pay(lines)}>
+            {paying ? "Maksan…" : `Maksa ${formatEur(summary.total)}`}
+          </button>
         </>
       }
     >

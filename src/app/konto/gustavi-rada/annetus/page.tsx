@@ -1,6 +1,5 @@
 import Link from "next/link";
 import { GustavScene } from "@/components/Gustav";
-import { NotWiredButton } from "@/components/NotWiredButton";
 import { Screen } from "@/components/Screen";
 import { school } from "@/lib/sample-data";
 
@@ -10,12 +9,7 @@ export default function Donation() {
       title="Gustavi rada"
       backTo="/konto/gustavi-rada"
       centered
-      footer={
-        <>
-          <Link className="btn btn--ghost" href="/konto/gustavi-rada">Tagasi rajale</Link>
-          <NotWiredButton>Jaga sõpradega</NotWiredButton>
-        </>
-      }
+      footer={<Link className="btn" href="/konto/gustavi-rada">Tagasi rajale</Link>}
     >
       <GustavScene variant="books" label="Gustav istub raamatuhunnikul" />
       <h1>Aitäh!</h1>

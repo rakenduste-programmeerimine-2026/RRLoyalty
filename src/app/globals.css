@@ -206,6 +206,20 @@ h1, h2 { font-family: var(--serif); font-weight: 600; line-height: 1.2; letter-s
 }
 .cart-line .cover { font-size: 0; padding: 0; box-shadow: inset 3px 0 0 rgb(0 0 0 / 14%); }
 .cart-line b { display: block; font-family: var(--serif); font-size: 15px; font-weight: 600; }
+.cart-line__qty { display: flex; align-items: center; gap: 8px; margin-top: 6px; }
+.cart-line__qty button:not(.textlink) {
+  width: 28px;
+  height: 28px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-s);
+  background: var(--white);
+  color: var(--ink);
+  font: inherit;
+  cursor: pointer;
+}
+.cart-line__qty button:disabled { opacity: 0.4; cursor: default; }
+.cart-line__qty span { min-width: 1ch; text-align: center; font-weight: 600; }
+.cart-line__qty .textlink { margin-left: auto; }
 .sum { display: grid; gap: 6px; font-size: 15px; }
 .sum div { display: flex; justify-content: space-between; gap: 12px; }
 .sum .saving { color: var(--crimson); }

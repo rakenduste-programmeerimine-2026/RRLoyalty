@@ -1,9 +1,8 @@
 import Link from "next/link";
 import { BookCover } from "@/components/BookCover";
-import { NotWiredButton } from "@/components/NotWiredButton";
 import { Screen } from "@/components/Screen";
 import { formatEur, nameDayPrice } from "@/lib/money";
-import { member, nameDayBooks, nameDayOfferUntil } from "@/lib/sample-data";
+import { nameDayBooks, nameDayOfferUntil } from "@/lib/sample-data";
 
 export default function Namesakes() {
   return (
@@ -23,9 +22,6 @@ export default function Namesakes() {
           </Link>
         ))}
       </div>
-      <NotWiredButton className="card-link">
-        Ei leidnud sobivat? Vaata raamatuid, kus tegelase nimi on {member.name} ›
-      </NotWiredButton>
     </Screen>
   );
 }

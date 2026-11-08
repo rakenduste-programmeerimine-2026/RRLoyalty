@@ -7,6 +7,9 @@ export const member = {
   pointsValidUntil: "31.12.2027",
 };
 
+/** The demo member's points before the name-day purchase (see docs/program-rules.md, Demo). */
+export const pointsBeforeNameDayPurchase = 34;
+
 export const nameDayOfferUntil = "12.11.2026";
 /** The prize-choice stop the demo member has reached (100, 200, 300 or 400). */
 export const reachedPrizeStop = 100;

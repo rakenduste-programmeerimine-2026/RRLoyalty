@@ -41,6 +41,9 @@ The agreed rules for the prototype. When the code or an issue disagrees with thi
 ## Name day and birthday
 
 - Name day: 10% off books by namesake authors for 7 days from the name day. The author's first name must match exactly.
+  - The 7 days are the name day and the 6 days after it: a name day on 6 November gives the discount from 6 to 12 November.
+  - "Exactly" means the same text, so case, spacing and accents all count: "mari" and "Marie" do not match "Mari".
+  - Every format by a namesake author gets the discount, e-books included.
 - Name days come from a small table of the seeded names.
 - Birthday: a 5 € reward card, code only, once a year.
 

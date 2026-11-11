@@ -4,6 +4,7 @@
 // Dates are calendar days as "YYYY-MM-DD" strings, always passed in by the
 // caller, so /demo can move "today" without touching the system clock.
 
+import { DAY_MS, formatDay, parseDay } from "./calendar-day";
 import { nameDayPrice } from "./money";
 
 /** One row of the name_days table. */
@@ -20,24 +21,9 @@ export type NameDayOffer = {
   lastDay: string;
 };
 
-const DAY_MS = 24 * 60 * 60 * 1000;
-
 /** The author's first name must equal the member's first name exactly: same case, spacing and accents. */
 export function isNamesake(memberFirstName: string, authorFirstName: string): boolean {
   return memberFirstName === authorFirstName;
-}
-
-function parseDay(value: string): number {
-  const match = /^(\d{4})-(\d{2})-(\d{2})$/.exec(value);
-  const time = match ? Date.UTC(Number(match[1]), Number(match[2]) - 1, Number(match[3])) : NaN;
-  if (Number.isNaN(time) || formatDay(time) !== value) {
-    throw new RangeError(`Expected a calendar date as YYYY-MM-DD, got "${value}"`);
-  }
-  return time;
-}
-
-function formatDay(time: number): string {
-  return new Date(time).toISOString().slice(0, 10);
 }
 
 /** The name day in the given year, or null when it does not exist that year (29 February). */

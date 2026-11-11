@@ -28,13 +28,6 @@ export const nameDayBooks: Book[] = [
   { slug: "vaikne-tanav", title: "Vaikne tänav", author: "Mari Proov", price: 22, cover: "teal" },
 ];
 
-export const recentPoints = [
-  { date: "12.09", where: "E-pood · nimepäeva ost", points: 18 },
-  { date: "03.09", where: "Literaat Telliskivi", points: 9 },
-  { date: "28.08", where: "Äpi tellimus", points: 14 },
-  { date: "15.08", where: "Kauplus Viru Keskus", points: 11 },
-];
-
 export const accountLinks = [
   "Minu andmed",
   "Tellimused",

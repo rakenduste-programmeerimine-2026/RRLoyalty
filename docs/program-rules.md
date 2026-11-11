@@ -46,6 +46,10 @@ The agreed rules for the prototype. When the code or an issue disagrees with thi
   - Every format by a namesake author gets the discount, e-books included.
 - Name days come from a small table of the seeded names.
 - Birthday: a 5 € reward card, code only, once a year.
+  - It is given on the birthday itself, to members with a birthday on file. On any other day nothing is given.
+  - Someone born on 29 February gets it on 28 February in a year without a 29 February.
+  - "Once a year" means once per calendar year of the birthday. Triggering it again the same year gives nothing.
+  - It is a perk like the others: it lasts 60 days from the birthday.
 
 ## Simulated for the prototype
 

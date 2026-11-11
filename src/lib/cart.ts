@@ -1,7 +1,9 @@
-import { nameDayPrice } from "./money";
 import type { Book } from "./sample-data";
 
 export type CartLine = { slug: string; qty: number };
+
+/** A book with the price this member pays, worked out on the server. */
+export type PricedCartBook = Book & { discounted: number };
 
 export const MAX_QTY = 9;
 
@@ -41,7 +43,7 @@ export function parseCart(raw: string | null): CartLine[] {
 const cents = (amount: number) => Math.round(amount * 100);
 
 export type CartSummary = {
-  items: { book: Book; qty: number; price: number; discounted: number }[];
+  items: { book: PricedCartBook; qty: number; price: number; discounted: number }[];
   count: number;
   listTotal: number;
   discount: number;
@@ -50,14 +52,14 @@ export type CartSummary = {
 };
 
 /**
- * Totals for the bag. Every book in the catalog is a namesake book, so each gets the name-day price.
+ * Totals for the bag. Each book costs its `discounted` price, which equals `price` when no discount applies.
  * Points are 1 per euro of the amount paid, rounded down once for the whole purchase.
  */
-export function summarizeCart(lines: CartLine[], catalog: Book[]): CartSummary {
+export function summarizeCart(lines: CartLine[], catalog: PricedCartBook[]): CartSummary {
   const items = lines.flatMap((line) => {
     const book = catalog.find((candidate) => candidate.slug === line.slug);
     if (!book) return [];
-    return [{ book, qty: line.qty, price: book.price, discounted: nameDayPrice(book.price) }];
+    return [{ book, qty: line.qty, price: book.price, discounted: book.discounted }];
   });
 
   const listCents = items.reduce((sum, item) => sum + cents(item.price) * item.qty, 0);

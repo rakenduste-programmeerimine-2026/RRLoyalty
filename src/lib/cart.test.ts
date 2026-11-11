@@ -1,11 +1,12 @@
 import { describe, expect, it } from "vitest";
-import { MAX_QTY, addToCart, parseCart, removeFromCart, setQty, summarizeCart } from "./cart";
-import type { Book } from "./sample-data";
+import { MAX_QTY, addToCart, parseCart, removeFromCart, setQty, summarizeCart, type PricedCartBook } from "./cart";
 
-const catalog: Book[] = [
-  { slug: "a", title: "A", author: "Mari A", price: 20, cover: "aqua" },
-  { slug: "b", title: "B", author: "Mari B", price: 17.9, cover: "teal" },
-  { slug: "c", title: "C", author: "Mari C", price: 15.5, cover: "crimson" },
+// Prices as the server sends them: namesake books at −10%, others at full price.
+const catalog: PricedCartBook[] = [
+  { slug: "a", title: "A", author: "Mari A", price: 20, discounted: 18, cover: "aqua" },
+  { slug: "b", title: "B", author: "Mari B", price: 17.9, discounted: 16.11, cover: "teal" },
+  { slug: "c", title: "C", author: "Mari C", price: 15.5, discounted: 13.95, cover: "crimson" },
+  { slug: "d", title: "D", author: "Jüri D", price: 12.5, discounted: 12.5, cover: "aubergine" },
 ];
 
 describe("addToCart", () => {
@@ -56,6 +57,11 @@ describe("summarizeCart", () => {
     const summary = summarizeCart([{ slug: "c", qty: 2 }], catalog);
     expect(summary.total).toBe(27.9);
     expect(summary.earned).toBe(27);
+  });
+
+  it("charges full price for a book without a discount", () => {
+    const summary = summarizeCart([{ slug: "a", qty: 1 }, { slug: "d", qty: 1 }], catalog);
+    expect(summary).toMatchObject({ listTotal: 32.5, discount: 2, total: 30.5, earned: 30 });
   });
 
   it("skips books that are no longer in the catalog", () => {

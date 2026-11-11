@@ -2,14 +2,14 @@ import { beforeEach, describe, expect, it } from "vitest";
 import { EmptyCartError, checkoutCart, isCheckoutRef, orderNumberFor } from "./checkout";
 import { MemoryPurchaseStore } from "./memory-purchase-store";
 import { PurchaseConflictError } from "./purchases";
-import type { Book } from "./sample-data";
+import type { PricedCartBook } from "./cart";
 
 const memberId = "member-1";
 const at = new Date("2026-11-08T12:00:00Z");
 const ref = "0f8b2c4e-1a2b-4c3d-8e9f-0123456789ab";
-const catalog: Book[] = [
-  { slug: "sugisene-raamatupood", title: "Sügisene raamatupood", author: "Mari Näidis", price: 20, cover: "aubergine" },
-  { slug: "lounatuul", title: "Lõunatuul", author: "Mari Näidis", price: 17.9, cover: "aqua" },
+const catalog: PricedCartBook[] = [
+  { slug: "sugisene-raamatupood", title: "Sügisene raamatupood", author: "Mari Näidis", price: 20, discounted: 18, cover: "aubergine" },
+  { slug: "lounatuul", title: "Lõunatuul", author: "Mari Näidis", price: 17.9, discounted: 16.11, cover: "aqua" },
 ];
 
 let store: MemoryPurchaseStore;

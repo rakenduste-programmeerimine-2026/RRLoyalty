@@ -2,10 +2,9 @@
 // The browser only sends which books and how many. Prices, the discount and
 // the amount paid are worked out here from the catalog, never taken from it.
 
-import { parseCart, summarizeCart, type CartLine } from "./cart";
+import { parseCart, summarizeCart, type CartLine, type PricedCartBook } from "./cart";
 import type { PurchaseStore } from "./purchase-store";
 import { recordPurchase, type RecordedPurchase } from "./purchases";
-import type { Book } from "./sample-data";
 
 const CHECKOUT_REF = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
@@ -31,7 +30,8 @@ export type CheckoutRequest = {
   lines: unknown;
   /** Made once per checkout in the browser and sent again on a retry. */
   checkoutRef: string;
-  catalog: Book[];
+  /** Priced for this member on the server. */
+  catalog: PricedCartBook[];
   at?: Date;
 };
 

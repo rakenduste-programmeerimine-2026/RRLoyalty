@@ -3,8 +3,8 @@
 import { getMember } from "@/lib/auth";
 import { EmptyCartError, checkoutCart } from "@/lib/checkout";
 import { PurchaseConflictError } from "@/lib/purchases";
-import { nameDayBooks } from "@/lib/sample-data";
 import { SupabasePurchaseStore } from "@/lib/supabase-purchase-store";
+import { loadShopFromSupabase } from "@/lib/supabase-shop-store";
 import { createAdminClient } from "@/lib/supabase/admin";
 
 export type CheckoutState =
@@ -17,12 +17,13 @@ export async function payForCart(lines: unknown, checkoutRef: string): Promise<C
   const member = await getMember("/ostukorv");
 
   try {
+    // Priced again here, at payment time: the offer can end between opening the bag and paying.
+    const shop = await loadShopFromSupabase(member.id);
     const result = await checkoutCart(new SupabasePurchaseStore(createAdminClient()), {
       memberId: member.id,
       lines,
       checkoutRef,
-      // Books and prices move to the database with the name-day discount (#12).
-      catalog: nameDayBooks,
+      catalog: shop.books,
     });
     return {
       ok: true,

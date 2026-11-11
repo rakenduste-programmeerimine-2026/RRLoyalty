@@ -5,17 +5,23 @@ import { useRef, useState, useTransition } from "react";
 import { BookCover } from "@/components/BookCover";
 import { Screen } from "@/components/Screen";
 import { useCart } from "@/components/useCart";
-import { MAX_QTY, summarizeCart, type CartLine } from "@/lib/cart";
+import { MAX_QTY, summarizeCart, type CartLine, type PricedCartBook } from "@/lib/cart";
 import { formatEur } from "@/lib/money";
 import { RAIL_END, STOPS, nextStop } from "@/lib/rail";
-import { nameDayBooks, pointsBeforeNameDayPurchase } from "@/lib/sample-data";
 import { payForCart, type CheckoutState } from "./actions";
 
 const lowerFirst = (text: string) => text.charAt(0).toLocaleLowerCase("et") + text.slice(1);
 
 type Order = Extract<CheckoutState, { ok: true }>;
 
-export function Bag() {
+type BagProps = {
+  /** Every book, priced for the signed-in member on the server. */
+  catalog: PricedCartBook[];
+  /** The member's points on the current lap. */
+  lapPoints: number;
+};
+
+export function Bag({ catalog, lapPoints }: BagProps) {
   const { lines, setQty, remove, clear } = useCart();
   const [order, setOrder] = useState<Order>();
   const [error, setError] = useState<string>();
@@ -80,7 +86,7 @@ export function Bag() {
     );
   }
 
-  const summary = summarizeCart(lines, nameDayBooks);
+  const summary = summarizeCart(lines, catalog);
 
   if (summary.count === 0) {
     return (
@@ -95,7 +101,7 @@ export function Bag() {
     );
   }
 
-  const pointsAfter = pointsBeforeNameDayPurchase + summary.earned;
+  const pointsAfter = lapPoints + summary.earned;
   const next = nextStop(pointsAfter);
   const goal = next?.at ?? RAIL_END;
 
@@ -146,10 +152,12 @@ export function Bag() {
       ))}
       <div className="sum">
         <div><span>Hind</span><span>{formatEur(summary.listTotal)}</span></div>
-        <div className="saving">
-          <span>Nimepäeva soodustus −10%</span>
-          <span>−{formatEur(summary.discount)}</span>
-        </div>
+        {summary.discount > 0 && (
+          <div className="saving">
+            <span>Nimepäeva soodustus −10%</span>
+            <span>−{formatEur(summary.discount)}</span>
+          </div>
+        )}
         <div className="total"><span>Kokku</span><span>{formatEur(summary.total)}</span></div>
       </div>
       <div className="gain">

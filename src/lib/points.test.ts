@@ -110,3 +110,72 @@ describe("earnFromPurchase", () => {
     expect(() => earnFromPurchase({ lap: 0, lapPoints: 0, amountPaid: 5, at })).toThrow(RangeError);
   });
 });
+
+describe("earnFromPurchase across laps", () => {
+  it("carries extra points into the next lap: 390 + 25 gives 15", () => {
+    const outcome = earnFromPurchase({ lap: 1, lapPoints: 390, amountPaid: 25, at });
+
+    expect(outcome.lapAfter).toBe(2);
+    expect(outcome.lapPointsAfter).toBe(15);
+  });
+
+  it("starts the next lap on 0 when a purchase lands exactly on 400", () => {
+    const outcome = earnFromPurchase({ lap: 3, lapPoints: 380, amountPaid: 20, at });
+
+    expect(outcome.lapAfter).toBe(4);
+    expect(outcome.lapPointsAfter).toBe(0);
+    expect(outcome.perks.map((perk) => [perk.stopAt, perk.lap])).toEqual([[400, 3]]);
+  });
+
+  it("stays on the lap below 400", () => {
+    const outcome = earnFromPurchase({ lap: 2, lapPoints: 34, amountPaid: 18, at });
+
+    expect(outcome.lapAfter).toBe(2);
+    expect(outcome.lapPointsAfter).toBe(52);
+  });
+
+  it("opens the next lap's stops passed by the carried-over points", () => {
+    const outcome = earnFromPurchase({ lap: 1, lapPoints: 390, amountPaid: 70, at });
+
+    expect(outcome.lapPointsAfter).toBe(60);
+    expect(outcome.perks.map((perk) => [perk.stopAt, perk.lap])).toEqual([
+      [400, 1],
+      [50, 2],
+    ]);
+  });
+
+  it("opens the repeat perks again on a later lap", () => {
+    const outcome = earnFromPurchase({ lap: 2, lapPoints: 0, amountPaid: 400, at, appPerkGiven: true });
+
+    expect(outcome.perks.map((perk) => [perk.stopAt, perk.lap])).toEqual([
+      [50, 2],
+      [100, 2],
+      [200, 2],
+      [250, 2],
+      [300, 2],
+      [350, 2],
+      [400, 2],
+    ]);
+  });
+
+  it("opens the 150 app perk when the member has never had it", () => {
+    const outcome = earnFromPurchase({ lap: 2, lapPoints: 140, amountPaid: 10, at, appPerkGiven: false });
+
+    expect(outcome.perks.map((perk) => [perk.stopAt, perk.lap])).toEqual([[150, 2]]);
+  });
+
+  it("skips the 150 app perk once the member has had it", () => {
+    const outcome = earnFromPurchase({ lap: 2, lapPoints: 140, amountPaid: 70, at, appPerkGiven: true });
+
+    expect(outcome.perks.map((perk) => perk.stopAt)).toEqual([200]);
+  });
+
+  it("gives the 150 app perk only once in a purchase that passes it on two laps", () => {
+    const outcome = earnFromPurchase({ lap: 1, lapPoints: 100, amountPaid: 500, at });
+
+    expect(outcome.lapAfter).toBe(2);
+    expect(outcome.lapPointsAfter).toBe(200);
+    expect(outcome.perks.filter((perk) => perk.stopAt === 150).map((perk) => perk.lap)).toEqual([1]);
+    expect(outcome.perks.map((perk) => [perk.stopAt, perk.lap])).toContainEqual([200, 2]);
+  });
+});

@@ -20,10 +20,10 @@ function store(firstName: string | null, lapPoints = 34): ShopStore {
 }
 
 describe("loadShop", () => {
-  it("gives a namesake 10% off while the offer is open, e-books included", async () => {
-    const shop = await loadShop(store("Mari"), "member-1", "2026-11-08");
+  it("gives a namesake 10% off on the name day, e-books included", async () => {
+    const shop = await loadShop(store("Mari"), "member-1", "2026-11-06");
 
-    expect(shop.offer).toMatchObject({ firstName: "Mari", lastDay: "2026-11-12" });
+    expect(shop.offer).toMatchObject({ firstName: "Mari", lastDay: "2026-11-06" });
     expect(shop.lapPoints).toBe(34);
     expect(shop.books.map((book) => [book.slug, book.discounted])).toEqual([
       ["a", 18],
@@ -33,22 +33,22 @@ describe("loadShop", () => {
     ]);
   });
 
-  it("charges full price once the 7 days are over", async () => {
-    const shop = await loadShop(store("Mari"), "member-1", "2026-11-13");
+  it("charges full price the day after the name day", async () => {
+    const shop = await loadShop(store("Mari"), "member-1", "2026-11-07");
 
     expect(shop.offer).toBeNull();
     expect(shop.books.every((book) => book.discounted === book.price)).toBe(true);
   });
 
   it("has no offer for a member without a profile or a name day", async () => {
-    expect((await loadShop(store(null), "member-1", "2026-11-08")).offer).toBeNull();
-    expect((await loadShop(store("Jüri"), "member-1", "2026-11-08")).offer).toBeNull();
+    expect((await loadShop(store(null), "member-1", "2026-11-06")).offer).toBeNull();
+    expect((await loadShop(store("Jüri"), "member-1", "2026-11-06")).offer).toBeNull();
   });
 });
 
 describe("namesakeBooks", () => {
   it("lists only authors with exactly the member's first name", async () => {
-    const shop = await loadShop(store("Mari"), "member-1", "2026-11-08");
+    const shop = await loadShop(store("Mari"), "member-1", "2026-11-06");
     expect(namesakeBooks(shop).map((book) => book.slug)).toEqual(["a", "b"]);
   });
 

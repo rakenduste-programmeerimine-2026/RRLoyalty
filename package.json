@@ -10,7 +10,8 @@
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
     "test:db": "supabase test db",
-    "seed": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --env-file=.env.local scripts/seed.mts"
+    "seed": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --env-file=.env.local scripts/seed.mts",
+    "seed:demo-name-days": "node --env-file=.env.local scripts/seed-demo-name-days.mts"
   },
   "dependencies": {
     "@supabase/ssr": "^0.12.7",

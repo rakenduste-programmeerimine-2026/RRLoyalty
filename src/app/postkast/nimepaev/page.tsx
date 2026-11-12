@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { GustavScene } from "@/components/Gustav";
 import { Screen } from "@/components/Screen";
-import { member, nameDayOfferUntil } from "@/lib/sample-data";
+import { member } from "@/lib/sample-data";
 
 export default function NameDayEmail() {
   return (
@@ -12,7 +12,7 @@ export default function NameDayEmail() {
       <GustavScene variant="nameday" label="Gustav tähistab nimepäeva" />
       <h1>Palju õnne nimepäevaks, {member.name}!</h1>
       <p className="muted">Täna saad −10% kõigilt raamatutelt, mille autor on sinu nimekaim.</p>
-      <p className="note">Kehtib kuni {nameDayOfferUntil} e-poes ja kauplustes klubikaardiga.</p>
+      <p className="note">Kehtib ainult täna e-poes ja kauplustes klubikaardiga.</p>
     </Screen>
   );
 }

@@ -10,14 +10,14 @@ import { nameDayPrice } from "./money";
 /** One row of the name_days table. */
 export type NameDay = { name: string; month: number; day: number };
 
-/** The offer lasts 7 days: the name day itself and the 6 days after it. */
-export const NAME_DAY_OFFER_DAYS = 7;
+/** The offer lasts 1 day: only the name day itself (client's decision, #53). */
+export const NAME_DAY_OFFER_DAYS = 1;
 
 export type NameDayOffer = {
   firstName: string;
   /** The name day that opened the offer. */
   nameDay: string;
-  /** The last day the discount applies, inclusive. */
+  /** The last day the discount applies, inclusive. With a 1-day offer it equals nameDay. */
   lastDay: string;
 };
 
@@ -35,8 +35,9 @@ function nameDayIn(year: number, nameDay: NameDay): number | null {
 
 /**
  * The member's open name-day offer on `today`, or null when there is none.
- * A name day late in December carries its offer into January. When a name has
- * several name days, the one whose offer runs longest wins.
+ * The offer is open only on a name day itself. A name with several name days
+ * gets it on each of them. (The loop also checks last year's name day, which
+ * only matters if the offer ever lasts longer again.)
  */
 export function nameDayOffer(firstName: string, nameDays: NameDay[], today: string): NameDayOffer | null {
   const now = parseDay(today);

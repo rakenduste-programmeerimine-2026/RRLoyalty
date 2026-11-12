@@ -6,7 +6,7 @@ import { Screen } from "@/components/Screen";
 import { ShopError, ShopLoading } from "@/components/ShopError";
 import { getMember } from "@/lib/auth";
 import { formatEur } from "@/lib/money";
-import { formatDayEt, namesakeBooks, type Shop } from "@/lib/namesakes";
+import { namesakeBooks, type Shop } from "@/lib/namesakes";
 import { loadShopFromSupabase } from "@/lib/supabase-shop-store";
 
 const TITLE = "Minu konto";
@@ -50,7 +50,7 @@ async function Namesakes() {
   return (
     <Screen title={TITLE} backTo={BACK}>
       <h1>Sinu nimekaimud</h1>
-      <p className="tag">Nimepäeva −10% kuni {formatDayEt(shop.offer.lastDay)}</p>
+      <p className="tag">Nimepäeva −10% ainult täna</p>
       {books.length === 0 ? (
         <p className="muted">Praegu pole meil ühtegi raamatut, mille autori eesnimi on {shop.offer.firstName}.</p>
       ) : (

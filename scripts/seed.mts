@@ -42,8 +42,8 @@ function must<T>(result: SupabaseResult<T>, what: string): T {
 
 const settings = [{ key: "donation_school", value: "Näidiskooli" }];
 
-// 13 November: the 7-day offer runs 13–19.11.2026 and covers the presentation.
-const nameDays = [{ name: "Mari", month: 11, day: 13 }];
+// 19 November, the presentation day: the discount applies on the name day only (#53).
+const nameDays = [{ name: "Mari", month: 11, day: 19 }];
 
 const authors = [
   { first_name: "Mari", last_name: "Näidis" },

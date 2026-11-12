@@ -12,7 +12,7 @@ const ACCOUNT_PAGES: { label: string; href: string | null }[] = [
   { label: "Tellimused", href: null },
   { label: "Gustavi rada", href: "/konto/gustavi-rada" },
   { label: "Kinkekaardid", href: "/konto/kinkekaardid" },
-  { label: "Annetused", href: null },
+  { label: "Annetused", href: "/konto/annetused" },
   { label: "Wallet-kaart", href: null },
   { label: "Uudiskirjad", href: null },
 ];

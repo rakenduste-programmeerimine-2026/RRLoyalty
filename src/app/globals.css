@@ -366,6 +366,22 @@ a.gift-card:hover { border-color: var(--teal); }
 .coupon span { font-size: 14px; }
 .coupon__cta { color: var(--teal); font-weight: 600; }
 
+/* Uudiskirjad */
+.newsletters { display: grid; gap: 16px; max-width: 560px; }
+.newsletters fieldset { display: grid; gap: 0; margin: 0; padding: 0; border: 0; }
+.newsletters legend { margin-bottom: 8px; padding: 0; }
+.toggle-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 14px 0;
+  border-bottom: 1px solid var(--line);
+  cursor: pointer;
+}
+.toggle-row span { display: grid; gap: 2px; }
+.toggle-row input { flex: none; width: 44px; height: 24px; accent-color: var(--teal); cursor: pointer; }
+
 /* Annetused */
 .donation-list { border: 1px solid var(--line); border-radius: var(--radius-m); background: var(--white); }
 .donation-list li { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 12px 16px; border-bottom: 1px solid var(--line); }

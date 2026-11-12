@@ -2,7 +2,7 @@ import { connection } from "next/server";
 import { Suspense } from "react";
 import { ShopError, ShopLoading } from "@/components/ShopError";
 import { getMember } from "@/lib/auth";
-import type { Shop } from "@/lib/namesakes";
+import { formatDayEt, type Shop } from "@/lib/namesakes";
 import { loadShopFromSupabase } from "@/lib/supabase-shop-store";
 import { Bag } from "./Bag";
 
@@ -40,5 +40,12 @@ async function PricedBag() {
     cover,
   }));
 
-  return <Bag catalog={catalog} lapPoints={shop.lapPoints} />;
+  return (
+    <Bag
+      catalog={catalog}
+      lapPoints={shop.lapPoints}
+      firstName={shop.firstName}
+      offerLastDay={shop.offer ? formatDayEt(shop.offer.lastDay) : null}
+    />
+  );
 }

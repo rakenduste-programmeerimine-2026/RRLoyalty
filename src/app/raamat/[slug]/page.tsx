@@ -8,6 +8,7 @@ import { ShopError, ShopLoading } from "@/components/ShopError";
 import { getMember } from "@/lib/auth";
 import { formatEur } from "@/lib/money";
 import type { Shop } from "@/lib/namesakes";
+import { pointsForPurchase } from "@/lib/points";
 import { loadShopFromSupabase } from "@/lib/supabase-shop-store";
 
 export const instant = false;
@@ -60,6 +61,9 @@ async function BookDetails({ params }: { params: Params }) {
       ) : (
         <p className="price"><strong>{formatEur(book.price)}</strong></p>
       )}
+      <p className="gain">
+        <span><b>+{pointsForPurchase(book.discounted)} punkti</b> Gustavi rajale</span>
+      </p>
     </Screen>
   );
 }

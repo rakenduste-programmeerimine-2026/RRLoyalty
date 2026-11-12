@@ -6,13 +6,20 @@ import { SignInForm } from "./SignInForm";
 
 export const metadata: Metadata = { title: "Logi sisse · Gustavi rada" };
 
-type SearchParams = Promise<{ next?: string | string[] }>;
+type SearchParams = Promise<{ next?: string | string[]; valja?: string | string[] }>;
 
 // searchParams is request data, so it is read inside the Suspense boundary
 // and the rest of the page stays in the static shell.
 async function Form({ searchParams }: { searchParams: SearchParams }) {
-  const { next } = await searchParams;
-  return <SignInForm next={safeNextPath(Array.isArray(next) ? next[0] : next)} />;
+  const { next, valja } = await searchParams;
+  return (
+    <>
+      {valja && (
+        <p className="note" role="status">Logisid välja. Logi uuesti sisse, et näha oma Gustavi rada.</p>
+      )}
+      <SignInForm next={safeNextPath(Array.isArray(next) ? next[0] : next)} />
+    </>
+  );
 }
 
 export default function SignInPage({ searchParams }: { searchParams: SearchParams }) {

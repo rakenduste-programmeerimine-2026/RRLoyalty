@@ -1,4 +1,5 @@
 import { notFound } from "next/navigation";
+import { connection } from "next/server";
 import { Suspense } from "react";
 import { AddToCartButton } from "@/components/AddToCartButton";
 import { BookCover } from "@/components/BookCover";
@@ -25,6 +26,8 @@ export default function BookPage({ params }: { params: Params }) {
 }
 
 async function BookDetails({ params }: { params: Params }) {
+  // The price depends on today's date, so this part renders at request time.
+  await connection();
   const { slug } = await params;
   const member = await getMember(`/raamat/${encodeURIComponent(slug)}`);
 

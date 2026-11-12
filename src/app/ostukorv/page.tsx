@@ -1,3 +1,4 @@
+import { connection } from "next/server";
 import { Suspense } from "react";
 import { ShopError, ShopLoading } from "@/components/ShopError";
 import { getMember } from "@/lib/auth";
@@ -17,6 +18,8 @@ export default function BagPage() {
 }
 
 async function PricedBag() {
+  // Prices depend on today's date, so this part renders at request time.
+  await connection();
   const member = await getMember("/ostukorv");
 
   let shop: Shop;

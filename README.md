@@ -8,7 +8,7 @@ A prototype of **Gustavi rada**, a loyalty program for Rahva Raamat customers, b
 | --- | --- | --- |
 | Martin Saareväli | [@Shargathx](https://github.com/Shargathx) | Frontend |
 | Anette Aruorg | [@aruorg](https://github.com/aruorg) | Database |
-| | [@piperal](https://github.com/piperal) | Backend |
+| Roland Piperal | [@piperal](https://github.com/piperal) | Backend |
 
 ## What the app is trying to achieve
 

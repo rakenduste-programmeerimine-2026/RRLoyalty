@@ -501,3 +501,13 @@ a.gift-card:hover { border-color: var(--teal); }
 .index h2 { margin: 28px 0 10px; font-size: 20px; }
 .index li a { display: block; padding: 10px 0; border-bottom: 1px solid var(--line); font-weight: 500; text-decoration: none; }
 .index li a:hover { text-decoration: underline; }
+
+/* Minu andmed */
+.profile { display: grid; gap: 20px; max-width: 480px; }
+.profile__facts { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.profile__facts div { padding: 12px 14px; border-radius: var(--radius-m); background: var(--paper); }
+.profile__facts dt { color: var(--ink-soft); font-size: 13px; }
+.profile__facts dd { font-weight: 600; }
+.profile-form { display: grid; gap: 16px; }
+.profile-form .field small { font-weight: 400; }
+.profile-form input[readonly] { background: var(--paper); color: var(--ink-soft); }

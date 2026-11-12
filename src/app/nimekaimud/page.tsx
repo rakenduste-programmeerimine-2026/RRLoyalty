@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { connection } from "next/server";
 import { Suspense } from "react";
 import { BookCover } from "@/components/BookCover";
 import { Screen } from "@/components/Screen";
@@ -20,6 +21,8 @@ export default function NamesakesPage() {
 }
 
 async function Namesakes() {
+  // The offer depends on today's date, so this part renders at request time.
+  await connection();
   const member = await getMember("/nimekaimud");
 
   let shop: Shop;

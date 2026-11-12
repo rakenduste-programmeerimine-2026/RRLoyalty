@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { connection } from "next/server";
 import { Suspense } from "react";
 import { NotWiredButton } from "@/components/NotWiredButton";
 import { Rail } from "@/components/Rail";
@@ -54,6 +55,8 @@ export default function GustavRailPage({ searchParams }: { searchParams: SearchP
 }
 
 async function RailContent({ searchParams }: { searchParams: SearchParams }) {
+  // Points expire by the clock, so this part renders at request time, never prerendered.
+  await connection();
   const member = await getMember(PATH);
   const showAll = (await searchParams).ajalugu === "koik";
   const limit = showAll ? HISTORY_ALL : HISTORY_SHORT;

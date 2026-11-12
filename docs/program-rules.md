@@ -57,7 +57,8 @@ The agreed rules for the prototype. When the code or an issue disagrees with thi
 - Payment. Checkout has no payment provider.
 - Emails. Messages appear in the in-app Postkast, and no email is sent.
 - `/demo`, hidden from navigation, adds purchases from any channel, triggers name days and birthdays, and skips ahead 3 days or 6 months.
-- "Lisa walletisse" on the gift card and "Jaga sõpradega" on the donation screen. They only show a message ("Kinkekaart lisatud walletisse", "Link kopeeritud"); nothing is added to a wallet or shared.
+- "Lisa walletisse" on the gift card and the club card, and "Jaga sõpradega" on the donation screen. They only show a message ("Kinkekaart lisatud walletisse", "Kaart lisatud walletisse", "Link kopeeritud"); nothing is added to a wallet or shared.
+- Email preferences ("Uudiskirjad"). "Salvesta eelistused" only shows a confirmation; nothing is stored, since no emails are sent.
 
 ## Demo
 

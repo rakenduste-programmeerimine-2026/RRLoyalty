@@ -14,7 +14,7 @@ const ACCOUNT_PAGES: { label: string; href: string | null }[] = [
   { label: "Kinkekaardid", href: "/konto/kinkekaardid" },
   { label: "Annetused", href: "/konto/annetused" },
   { label: "Wallet-kaart", href: "/konto/wallet-kaart" },
-  { label: "Uudiskirjad", href: null },
+  { label: "Uudiskirjad", href: "/konto/uudiskirjad" },
 ];
 
 /** The site header, the "Minu konto" menu and the page content beside it. */

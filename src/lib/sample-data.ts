@@ -7,7 +7,6 @@ export const member = {
   pointsValidUntil: "31.12.2027",
 };
 
-export const nameDayOfferUntil = "12.11.2026";
 /** The prize-choice stop the demo member has reached (100, 200, 300 or 400). */
 export const reachedPrizeStop = 100;
 export const giftCard ={ code: "GUSTAV-7K2M-5EUR", validUntil: "01.12.2026" };

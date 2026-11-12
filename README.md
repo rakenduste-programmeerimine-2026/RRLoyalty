@@ -24,7 +24,7 @@ The agreed rules are in [`docs/program-rules.md`](docs/program-rules.md). When t
 - **The rail:** 8 stops from 50 to 400 points, each opening a perk: a hot drink, 5 € gift card or donation choices, app perks, double points and a free parcel locker.
 - **Laps and expiry:** reaching 400 starts a new lap with the extra points carried over. Points expire 6 months after the last purchase. Perks, completed laps and the lifetime total are kept.
 - **Prize choice:** at 100, 200, 300 and 400 the member has 3 days to choose a 5 € gift card or a 5 € donation to a school library; with no choice, they get the gift card. Gift cards are shown with a scannable QR code.
-- **Name-day discount:** −10% on books by authors who share the member's first name.
+- **Name-day discount:** −10% on books by authors who share the member's first name, on the member's name day only.
 - **Birthday reward:** a 5 € card once a year.
 - **Postkast:** program messages in the app instead of real emails.
 - **Member account:** sign-in, the Gustavi rada page with points, perks, history and the expiry date, a cart and a simulated checkout.
@@ -69,11 +69,13 @@ Switch `.env.local` back to the hosted values when you are finished testing loca
 
 ## Seed data
 
-`npm run seed` fills the database that `.env.local` points to with the demo data: settings, the 8 rail stops, the namesake books, Mari's name day (13 November) and the demo member Mari Maasikas on 34 points, with her sign-in account.
+`npm run seed` fills the database that `.env.local` points to with the demo data: settings, the 8 rail stops, the namesake books, Mari's name day (19 November, the presentation day) and the demo member Mari Maasikas on 34 points, with her sign-in account.
 
 It needs `NEXT_PUBLIC_SUPABASE_URL`, `SUPABASE_SECRET_KEY`, `DEMO_EMAIL` and `DEMO_PASSWORD` in `.env.local`. The demo password is shared within the team privately, never in the repo. Running the seed again is safe: it updates rows instead of duplicating them and never deletes anything.
 
 For a fresh local database: `npx supabase db reset`, then `npm run seed` with `.env.local` pointing at the local server.
+
+**Temporary:** the name-day discount only applies on the name day itself, so `npm run seed:demo-name-days` gives Mari a name day on every date to test it on any day. Remove the script, and every Mari name day except 19 November, once `/demo` (#22) can move "today".
 
 ## Database tests
 

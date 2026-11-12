@@ -129,7 +129,7 @@ export function Bag({ catalog, lapPoints, firstName, offerLastDay }: BagProps) {
         {undo}
         <p className="muted">
           {offerLastDay
-            ? `Nimepäeva −10% kehtib kuni ${offerLastDay}.`
+            ? "Nimepäeva −10% kehtib ainult täna."
             : "Lisa raamat, et näha, mitu punkti see Gustavi rajale toob."}
         </p>
       </Screen>

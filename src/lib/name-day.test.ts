@@ -25,24 +25,20 @@ describe("isNamesake", () => {
 });
 
 describe("nameDayOffer", () => {
-  it("opens on the name day", () => {
+  it("opens on the name day, and only for that day", () => {
     expect(nameDayOffer("Mari", nameDays, "2026-11-06")).toEqual({
       firstName: "Mari",
       nameDay: "2026-11-06",
-      lastDay: "2026-11-12",
+      lastDay: "2026-11-06",
     });
-  });
-
-  it("is still open on the 7th day", () => {
-    expect(nameDayOffer("Mari", nameDays, "2026-11-12")?.lastDay).toBe("2026-11-12");
   });
 
   it("is not open the day before the name day", () => {
     expect(nameDayOffer("Mari", nameDays, "2026-11-05")).toBeNull();
   });
 
-  it("is closed on the 8th day", () => {
-    expect(nameDayOffer("Mari", nameDays, "2026-11-13")).toBeNull();
+  it("is closed the day after the name day", () => {
+    expect(nameDayOffer("Mari", nameDays, "2026-11-07")).toBeNull();
   });
 
   it("has no offer for a name without a name day", () => {
@@ -53,21 +49,19 @@ describe("nameDayOffer", () => {
     expect(nameDayOffer("mari", nameDays, "2026-11-06")).toBeNull();
   });
 
-  it("carries a late-December name day into the new year", () => {
-    expect(nameDayOffer("Silvester", nameDays, "2027-01-06")).toEqual({
-      firstName: "Silvester",
-      nameDay: "2026-12-31",
-      lastDay: "2027-01-06",
-    });
-    expect(nameDayOffer("Silvester", nameDays, "2027-01-07")).toBeNull();
+  it("does not carry a 31 December name day into the new year", () => {
+    expect(nameDayOffer("Silvester", nameDays, "2026-12-31")?.nameDay).toBe("2026-12-31");
+    expect(nameDayOffer("Silvester", nameDays, "2027-01-01")).toBeNull();
   });
 
-  it("uses the latest name day when a name has two", () => {
+  it("opens on each name day when a name has two, and not in between", () => {
     const twice: NameDay[] = [
       { name: "Mari", month: 11, day: 6 },
       { name: "Mari", month: 11, day: 9 },
     ];
-    expect(nameDayOffer("Mari", twice, "2026-11-10")?.lastDay).toBe("2026-11-15");
+    expect(nameDayOffer("Mari", twice, "2026-11-06")?.nameDay).toBe("2026-11-06");
+    expect(nameDayOffer("Mari", twice, "2026-11-08")).toBeNull();
+    expect(nameDayOffer("Mari", twice, "2026-11-09")?.nameDay).toBe("2026-11-09");
   });
 
   it("skips a 29 February name day in a year without one", () => {
@@ -83,7 +77,7 @@ describe("nameDayOffer", () => {
 });
 
 describe("namesakePrice", () => {
-  const offer = nameDayOffer("Mari", nameDays, "2026-11-08");
+  const offer = nameDayOffer("Mari", nameDays, "2026-11-06");
 
   it("takes 10% off a namesake author's book while the offer is open", () => {
     expect(namesakePrice({ price: 20, authorFirstName: "Mari" }, offer)).toBe(18);
@@ -94,8 +88,8 @@ describe("namesakePrice", () => {
     expect(namesakePrice({ price: 20, authorFirstName: "Marie" }, offer)).toBe(20);
   });
 
-  it("keeps the full price outside the offer window", () => {
-    const closed = nameDayOffer("Mari", nameDays, "2026-11-13");
+  it("keeps the full price on any other day", () => {
+    const closed = nameDayOffer("Mari", nameDays, "2026-11-07");
     expect(namesakePrice({ price: 20, authorFirstName: "Mari" }, closed)).toBe(20);
   });
 });

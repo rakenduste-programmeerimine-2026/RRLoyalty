@@ -9,7 +9,7 @@ import { SiteHeader } from "./SiteHeader";
 const ACCOUNT_PAGES: { label: string; href: string | null }[] = [
   { label: "Ülevaade", href: "/konto" },
   { label: "Minu andmed", href: null },
-  { label: "Tellimused", href: null },
+  { label: "Tellimused", href: "/konto/tellimused" },
   { label: "Gustavi rada", href: "/konto/gustavi-rada" },
   { label: "Kinkekaardid", href: "/konto/kinkekaardid" },
   { label: "Annetused", href: "/konto/annetused" },

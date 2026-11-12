@@ -1,4 +1,48 @@
-# RRLoyalty
+# RRLoyalty: Gustavi rada
+
+A prototype of **Gustavi rada**, a loyalty program for Rahva Raamat customers, built for the Rakenduste programmeerimine course in 2026. Deadline: 19 November 2026.
+
+## Team
+
+| Name | GitHub | Area |
+| --- | --- | --- |
+| Martin Saareväli | [@Shargathx](https://github.com/Shargathx) | Frontend |
+| Anette Aruorg | [@aruorg](https://github.com/aruorg) | Database |
+| | [@piperal](https://github.com/piperal) | Backend |
+
+## What the app is trying to achieve
+
+Rahva Raamat customers buy in shops, in the e-shop, at Literaat and in the app. Gustavi rada turns all of those purchases into one visible journey: every euro moves Gustav the cat along a rail, and each stop on the way opens a reward. The goal is to give members a reason to come back, whichever channel they use, and to make the program easy to understand at a glance.
+
+The prototype simulates the sales channels, payments and emails, so the whole program can be shown end to end without real integrations.
+
+## Core features
+
+The agreed rules are in [`docs/program-rules.md`](docs/program-rules.md). When this README and the rules disagree, the rules win.
+
+- **Points from every channel:** 1 point per euro paid, rounded down per purchase, from the shops, the e-shop, Literaat and the app.
+- **The rail:** 8 stops from 50 to 400 points, each opening a perk: a hot drink, 5 € gift card or donation choices, app perks, double points and a free parcel locker.
+- **Laps and expiry:** reaching 400 starts a new lap with the extra points carried over. Points expire 6 months after the last purchase. Perks, completed laps and the lifetime total are kept.
+- **Prize choice:** at 100, 200, 300 and 400 the member has 3 days to choose a 5 € gift card or a 5 € donation to a school library; with no choice, they get the gift card. Gift cards are shown with a scannable QR code.
+- **Name-day discount:** −10% on books by authors who share the member's first name.
+- **Birthday reward:** a 5 € card once a year.
+- **Postkast:** program messages in the app instead of real emails.
+- **Member account:** sign-in, the Gustavi rada page with points, perks, history and the expiry date, a cart and a simulated checkout.
+
+## Tech stack
+
+- [Next.js](https://nextjs.org/) 16 (App Router, Cache Components) with React 19 and TypeScript
+- [Supabase](https://supabase.com/): Postgres, Auth (email and password) and row-level security
+- [Vercel](https://vercel.com/) for hosting; `development` deploys to production
+- GitHub Actions for lint, type check, tests and build on every PR
+- [Vitest](https://vitest.dev/) for the points rules and other domain logic; pgTAP for the database policies; Playwright for the main flows (planned)
+- [`qrcode`](https://www.npmjs.com/package/qrcode) for the gift card QR codes
+
+## Success criteria
+
+<!-- To be agreed by the team. -->
+
+-
 
 ## Supabase setup
 

@@ -339,6 +339,32 @@ h1, h2 { font-family: var(--serif); font-weight: 600; line-height: 1.2; letter-s
 .side a { display: block; padding: 8px 12px; border-radius: var(--radius-s); color: var(--ink); font-size: 14px; text-decoration: none; }
 .side a:hover { background: var(--paper); }
 .side a[aria-current] { background: var(--ink); color: var(--paper); font-weight: 600; }
+.side__soon { display: block; padding: 8px 12px; color: var(--ink-soft); font-size: 14px; opacity: 0.6; }
+
+/* Kinkekaardid ja soodustused */
+.wallet-list { display: grid; gap: 12px; max-width: 560px; }
+.wallet-list__heading { margin-top: 12px; font-size: 18px; }
+.gift-card,
+.coupon {
+  display: grid;
+  gap: 4px;
+  padding: 16px 18px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-m);
+  background: var(--white);
+  color: var(--ink);
+  text-decoration: none;
+}
+.gift-card small,
+.coupon small { color: var(--ink-soft); font-size: 13px; }
+.gift-card b,
+.coupon b { font-family: var(--serif); font-size: 20px; font-weight: 600; }
+a.gift-card:hover { border-color: var(--teal); }
+.gift-card--past { opacity: 0.6; }
+.coupon { border: 2px dashed var(--crimson); background: var(--paper); }
+.coupon:hover { background: var(--white); }
+.coupon span { font-size: 14px; }
+.coupon__cta { color: var(--teal); font-weight: 600; }
 
 .main { display: grid; gap: 24px; min-width: 0; }
 .main h1 { font-size: 36px; }

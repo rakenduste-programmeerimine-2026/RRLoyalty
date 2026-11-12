@@ -30,3 +30,9 @@ Switch `.env.local` back to the hosted values when you are finished testing loca
 It needs `NEXT_PUBLIC_SUPABASE_URL`, `SUPABASE_SECRET_KEY`, `DEMO_EMAIL` and `DEMO_PASSWORD` in `.env.local`. The demo password is shared within the team privately, never in the repo. Running the seed again is safe: it updates rows instead of duplicating them and never deletes anything.
 
 For a fresh local database: `npx supabase db reset`, then `npm run seed` with `.env.local` pointing at the local server.
+
+## Database tests
+
+`npm run test:db` runs the SQL tests in `supabase/tests/` against the local Supabase server, so Docker and `npx supabase start` are needed. `rls.test.sql` checks the row-level security policies: a member reads only their own data, a visitor reads only the public program and shop data, and nobody but the server can change anything. The tests roll back, so they leave the database as it was.
+
+GitHub Actions does not run these tests, so run them before opening a PR that changes the database.

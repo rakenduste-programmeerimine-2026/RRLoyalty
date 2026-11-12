@@ -380,6 +380,28 @@ a.gift-card:hover { border-color: var(--teal); }
 .order-list__sum { text-align: right; }
 .order-list__points { color: var(--teal); font-size: 13px; font-weight: 700; }
 
+/* Wallet-kaart */
+.club-card-wrap { display: grid; justify-items: start; gap: 16px; }
+.club-card {
+  display: grid;
+  gap: 18px;
+  width: min(100%, 400px);
+  padding: 20px;
+  border-radius: var(--radius-l);
+  background: var(--ink);
+  color: var(--paper);
+  box-shadow: var(--shadow);
+}
+.club-card__top { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; }
+.club-card__brand { font: 600 20px/1 var(--serif); }
+.club-card__top small { color: var(--lilac); font-size: 13px; }
+.club-card__body { display: flex; align-items: flex-end; justify-content: space-between; gap: 16px; }
+.club-card__body > div:first-child { display: grid; gap: 4px; font-size: 14px; }
+.club-card__body b { font-size: 18px; }
+.club-card__points { color: var(--aqua); font-weight: 600; }
+.club-card__qr { flex: none; width: 104px; height: 104px; padding: 8px; border-radius: var(--radius-s); background: #ffffff; }
+.club-card__qr svg { display: block; width: 100%; height: 100%; }
+
 .main { display: grid; gap: 24px; min-width: 0; }
 .main h1 { font-size: 36px; }
 .lede { margin-top: 4px; color: var(--ink-soft); }

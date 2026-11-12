@@ -19,12 +19,38 @@ type BagProps = {
   catalog: PricedCartBook[];
   /** The member's points on the current lap. */
   lapPoints: number;
+  /** For "Aitäh, Mari!"; null when the member has no profile. */
+  firstName: string | null;
+  /** "18.11.2026" while the name-day offer is open, otherwise null. */
+  offerLastDay: string | null;
 };
 
-export function Bag({ catalog, lapPoints }: BagProps) {
-  const { lines, setQty, remove, clear } = useCart();
+type Removed = { line: CartLine; index: number; title: string };
+
+export function Bag({ catalog, lapPoints, firstName, offerLastDay }: BagProps) {
+  const { lines, setQty, remove, restore, clear } = useCart();
   const [order, setOrder] = useState<Order>();
   const [error, setError] = useState<string>();
+  const [removed, setRemoved] = useState<Removed>();
+
+  function removeLine(slug: string, title: string) {
+    const index = lines?.findIndex((line) => line.slug === slug) ?? -1;
+    if (lines && index >= 0) setRemoved({ line: lines[index], index, title });
+    remove(slug);
+  }
+
+  function undoRemove() {
+    if (!removed) return;
+    restore(removed.line, removed.index);
+    setRemoved(undefined);
+  }
+
+  const undo = removed && (
+    <p className="undo" role="status">
+      Eemaldasid: {removed.title}.{" "}
+      <button type="button" className="textlink" onClick={undoRemove}>Võta tagasi</button>
+    </p>
+  );
   const [paying, startPaying] = useTransition();
   // One reference per checkout, reused on a retry of the same cart so it is never recorded twice.
   const checkout = useRef<{ cart: string; ref: string }>(undefined);
@@ -56,23 +82,27 @@ export function Bag({ catalog, lapPoints }: BagProps) {
 
   if (order) {
     const opened = STOPS.filter((stop) => order.openedStops.includes(stop.at));
+    // Reaching 400 starts the next lap with the extra points.
+    const lapAfter = (lapPoints + order.points) % RAIL_END;
+    const toNext = nextStop(lapAfter);
     return (
       <Screen
         title="Tellimus"
         footer={
           <>
-            <Link className="textlink" href="/nimekaimud">Tagasi raamatute juurde</Link>
+            <Link className="textlink" href="/nimekaimud">Jätka ostlemist</Link>
             <Link className="btn" href="/konto/gustavi-rada">Vaata Gustavi rada</Link>
           </>
         }
       >
-        <h1>Aitäh, makse õnnestus!</h1>
-        <p className="muted">Tellimus {order.orderNumber} · {formatEur(order.total)}</p>
+        <h1>{firstName ? `Aitäh, ${firstName}!` : "Aitäh!"}</h1>
+        <p className="muted">Tellimus {order.orderNumber} on vormistatud · {formatEur(order.total)}</p>
         <div className="gain" role="status">
           <b>+{order.points} punkti Gustavi rajale</b>
           {opened.map((stop) => (
             <p key={stop.at}>Jõudsid {stop.at} punkti peatusse: {lowerFirst(stop.label)}.</p>
           ))}
+          {toNext && <p>Veel {toNext.at - lapAfter} punkti ja Gustav jõuab järgmisse peatusse.</p>}
         </div>
       </Screen>
     );
@@ -96,7 +126,12 @@ export function Bag({ catalog, lapPoints }: BagProps) {
         footer={<Link className="btn" href="/nimekaimud">Vaata nimekaimude raamatuid</Link>}
       >
         <h1>Ostukorv on tühi</h1>
-        <p className="muted">Lisa raamat, et näha, mitu punkti see Gustavi rajale toob.</p>
+        {undo}
+        <p className="muted">
+          {offerLastDay
+            ? `Nimepäeva −10% kehtib kuni ${offerLastDay}.`
+            : "Lisa raamat, et näha, mitu punkti see Gustavi rajale toob."}
+        </p>
       </Screen>
     );
   }
@@ -143,13 +178,14 @@ export function Bag({ catalog, lapPoints }: BagProps) {
               >
                 +
               </button>
-              <button type="button" className="textlink" onClick={() => remove(book.slug)}>
+              <button type="button" className="textlink" onClick={() => removeLine(book.slug, book.title)}>
                 Eemalda
               </button>
             </div>
           </div>
         </div>
       ))}
+      {undo}
       <div className="sum">
         <div><span>Hind</span><span>{formatEur(summary.listTotal)}</span></div>
         {summary.discount > 0 && (
@@ -158,6 +194,7 @@ export function Bag({ catalog, lapPoints }: BagProps) {
             <span>−{formatEur(summary.discount)}</span>
           </div>
         )}
+        <div><span>Tarne</span><span className="muted">Vali järgmises sammus</span></div>
         <div className="total"><span>Kokku</span><span>{formatEur(summary.total)}</span></div>
       </div>
       <div className="gain">

@@ -33,5 +33,6 @@ export async function signIn(_state: SignInState, formData: FormData): Promise<S
 export async function signOut() {
   const supabase = await createClient();
   await supabase.auth.signOut();
-  redirect(SIGN_IN_PATH);
+  // The sign-in page then says "Logisid välja", as in the prototype.
+  redirect(`${SIGN_IN_PATH}?valja=1`);
 }

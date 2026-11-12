@@ -23,6 +23,17 @@ export function removeFromCart(lines: CartLine[], slug: string): CartLine[] {
   return lines.filter((line) => line.slug !== slug);
 }
 
+/** Puts a removed line back where it was ("Võta tagasi"). Merges if the book was added again meanwhile. */
+export function restoreLine(lines: CartLine[], line: CartLine, index: number): CartLine[] {
+  if (lines.some((existing) => existing.slug === line.slug)) {
+    return lines.map((existing) =>
+      existing.slug === line.slug ? { ...existing, qty: clampQty(existing.qty + line.qty) } : existing,
+    );
+  }
+  const at = Math.min(Math.max(index, 0), lines.length);
+  return [...lines.slice(0, at), { slug: line.slug, qty: clampQty(line.qty) }, ...lines.slice(at)];
+}
+
 /** Reads a stored cart, dropping anything malformed instead of failing. */
 export function parseCart(raw: string | null): CartLine[] {
   if (!raw) return [];

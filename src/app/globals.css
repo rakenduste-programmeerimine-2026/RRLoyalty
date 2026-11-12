@@ -220,6 +220,8 @@ h1, h2 { font-family: var(--serif); font-weight: 600; line-height: 1.2; letter-s
 .cart-line__qty button:disabled { opacity: 0.4; cursor: default; }
 .cart-line__qty span { min-width: 1ch; text-align: center; font-weight: 600; }
 .cart-line__qty .textlink { margin-left: auto; }
+.undo { padding: 10px 12px; border-radius: var(--radius-s); background: var(--paper); font-size: 14px; }
+.undo .textlink { display: inline; padding: 0; font-size: inherit; }
 .sum { display: grid; gap: 6px; font-size: 15px; }
 .sum div { display: flex; justify-content: space-between; gap: 12px; }
 .sum .saving { color: var(--crimson); }
@@ -282,6 +284,54 @@ h1, h2 { font-family: var(--serif); font-weight: 600; line-height: 1.2; letter-s
 .site-nav a:hover { color: var(--teal); }
 .site-user { flex: none; font-size: 14px; font-weight: 600; line-height: 1.25; }
 .site-user small { display: block; color: var(--ink-soft); font-size: 12px; font-weight: 400; }
+.site-user > a { color: var(--ink); }
+
+/* Member menu and the sign-out confirmation */
+.member-menu { position: relative; }
+.member-menu__toggle { padding: 0; border: 0; background: none; color: var(--ink); font: inherit; cursor: pointer; }
+.member-menu__list {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  z-index: 20;
+  min-width: 180px;
+  padding: 6px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-m);
+  background: var(--white);
+  box-shadow: var(--shadow);
+}
+.member-menu__list a,
+.member-menu__list button {
+  display: block;
+  width: 100%;
+  padding: 8px 10px;
+  border: 0;
+  border-radius: var(--radius-s);
+  background: none;
+  color: var(--ink);
+  font: inherit;
+  font-weight: 500;
+  text-align: left;
+  text-decoration: none;
+  cursor: pointer;
+}
+.member-menu__list a:hover,
+.member-menu__list button:hover { background: var(--paper); }
+.confirm-dialog {
+  max-width: min(360px, calc(100vw - 32px));
+  padding: 24px;
+  border: 0;
+  border-radius: var(--radius-l);
+  background: var(--paper);
+  color: var(--ink);
+  box-shadow: var(--shadow);
+}
+.confirm-dialog::backdrop { background: rgb(35 30 51 / 40%); }
+.confirm-dialog h2 { margin-bottom: 8px; font-size: 20px; }
+.confirm-dialog p { color: var(--ink-soft); font-size: 14px; }
+.confirm-dialog__actions { display: flex; gap: 12px; margin-top: 20px; }
+.confirm-dialog__actions .btn { flex: 1; }
 
 .account { display: grid; grid-template-columns: 220px minmax(0, 1fr); gap: 32px; max-width: 1240px; margin: 0 auto; padding: 28px 24px 56px; }
 .side h2 { margin-bottom: 12px; font-size: 18px; }

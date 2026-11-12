@@ -1,7 +1,7 @@
 "use client";
 
 import { useSyncExternalStore } from "react";
-import { addToCart, parseCart, removeFromCart, setQty, type CartLine } from "@/lib/cart";
+import { addToCart, parseCart, removeFromCart, restoreLine, setQty, type CartLine } from "@/lib/cart";
 
 // The bag lives in this browser until checkout records purchases on the server (#11).
 const STORAGE_KEY = "gustavi-rada:ostukorv";
@@ -54,6 +54,7 @@ export function useCart() {
     add: (slug: string) => write(addToCart(read(), slug)),
     setQty: (slug: string, qty: number) => write(setQty(read(), slug, qty)),
     remove: (slug: string) => write(removeFromCart(read(), slug)),
+    restore: (line: CartLine, index: number) => write(restoreLine(read(), line, index)),
     clear: () => write([]),
   };
 }

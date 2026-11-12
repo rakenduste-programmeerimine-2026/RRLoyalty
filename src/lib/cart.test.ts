@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { MAX_QTY, addToCart, parseCart, removeFromCart, setQty, summarizeCart, type PricedCartBook } from "./cart";
+import { MAX_QTY, addToCart, parseCart, removeFromCart, restoreLine, setQty, summarizeCart, type PricedCartBook } from "./cart";
 
 // Prices as the server sends them: namesake books at −10%, others at full price.
 const catalog: PricedCartBook[] = [
@@ -30,6 +30,26 @@ describe("setQty and removeFromCart", () => {
 
   it("removes a book", () => {
     expect(removeFromCart([{ slug: "a", qty: 1 }, { slug: "b", qty: 1 }], "a")).toEqual([{ slug: "b", qty: 1 }]);
+  });
+});
+
+describe("restoreLine", () => {
+  const lines = [{ slug: "a", qty: 1 }, { slug: "c", qty: 1 }];
+
+  it("puts a removed book back in its place", () => {
+    expect(restoreLine(lines, { slug: "b", qty: 2 }, 1)).toEqual([
+      { slug: "a", qty: 1 },
+      { slug: "b", qty: 2 },
+      { slug: "c", qty: 1 },
+    ]);
+  });
+
+  it("merges with the same book added again meanwhile", () => {
+    expect(restoreLine(lines, { slug: "a", qty: 2 }, 0)).toEqual([{ slug: "a", qty: 3 }, { slug: "c", qty: 1 }]);
+  });
+
+  it("restores into an empty bag", () => {
+    expect(restoreLine([], { slug: "a", qty: 1 }, 3)).toEqual([{ slug: "a", qty: 1 }]);
   });
 });
 

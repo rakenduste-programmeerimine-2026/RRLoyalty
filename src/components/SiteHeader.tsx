@@ -1,6 +1,8 @@
 import Link from "next/link";
-import { member, siteLinks } from "@/lib/sample-data";
+import { Suspense } from "react";
+import { siteLinks } from "@/lib/sample-data";
 import { CartCount } from "./CartCount";
+import { HeaderMember } from "./HeaderMember";
 
 export function SiteHeader() {
   return (
@@ -14,7 +16,11 @@ export function SiteHeader() {
           ))}
         </nav>
         <div className="site-user">
-          {member.name} ▾<small><CartCount /></small>
+          {/* The member streams in; the rest of the header stays in the static shell. */}
+          <Suspense fallback={<span>Minu konto</span>}>
+            <HeaderMember />
+          </Suspense>
+          <small><CartCount /></small>
         </div>
       </div>
     </header>

@@ -3,12 +3,11 @@ import Link from "next/link";
 import { connection } from "next/server";
 import { Suspense } from "react";
 import { NotWiredButton } from "@/components/NotWiredButton";
+import { AccountShell } from "@/components/AccountShell";
 import { Rail } from "@/components/Rail";
-import { SiteHeader } from "@/components/SiteHeader";
 import { getMember } from "@/lib/auth";
 import { nextStop, pointsToNext } from "@/lib/rail";
 import { formatDate, formatDayMonth, historyLabel, type PerkView, type RailView } from "@/lib/rail-account";
-import { accountLinks } from "@/lib/sample-data";
 import { loadRailFromSupabase } from "@/lib/supabase-rail-store";
 
 export const metadata: Metadata = { title: "Gustavi rada · Minu konto" };
@@ -21,36 +20,17 @@ type SearchParams = Promise<{ ajalugu?: string }>;
 
 export default function GustavRailPage({ searchParams }: { searchParams: SearchParams }) {
   return (
-    <>
-      <SiteHeader />
-      <div className="account">
-        <nav className="side" aria-label="Minu konto">
-          <h2>Minu konto</h2>
-          <ul>
-            {accountLinks.map((link) => (
-              <li key={link}>
-                {link === "Gustavi rada" ? (
-                  <Link href={PATH} aria-current="page">{link}</Link>
-                ) : (
-                  <a href="#">{link}</a>
-                )}
-              </li>
-            ))}
-          </ul>
-        </nav>
-        <main className="main">
-          <div>
-            <h1>Gustavi rada</h1>
-            <p className="lede">
-              Iga 1 € = 1 punkt – kauplustes, e-poes, Literaadis ja äpis. Peatusel avaneb hüve.
-            </p>
-          </div>
-          <Suspense fallback={<p className="muted" role="status">Laen sinu punkte…</p>}>
-            <RailContent searchParams={searchParams} />
-          </Suspense>
-        </main>
+    <AccountShell current="Gustavi rada">
+      <div>
+        <h1>Gustavi rada</h1>
+        <p className="lede">
+          Iga 1 € = 1 punkt – kauplustes, e-poes, Literaadis ja äpis. Peatusel avaneb hüve.
+        </p>
       </div>
-    </>
+      <Suspense fallback={<p className="muted" role="status">Laen sinu punkte…</p>}>
+        <RailContent searchParams={searchParams} />
+      </Suspense>
+    </AccountShell>
   );
 }
 

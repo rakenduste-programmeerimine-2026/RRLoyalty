@@ -26,14 +26,4 @@ export const nameDayBooks: Book[] = [
   { slug: "vaikne-tanav", title: "Vaikne tänav", author: "Mari Proov", price: 22, cover: "teal" },
 ];
 
-export const accountLinks = [
-  "Minu andmed",
-  "Tellimused",
-  "Gustavi rada",
-  "Kinkekaardid",
-  "Annetused",
-  "Wallet-kaart",
-  "Uudiskirjad",
-];
-
 export const siteLinks = ["Raamatud", "E-raamatud", "Äpp", "Literaat", "Kauplused"];

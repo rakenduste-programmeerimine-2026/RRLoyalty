@@ -2,8 +2,18 @@
 
 import { useEffect, useState, type ReactNode } from "react";
 
-/** A button whose feature isn't built yet. Replace it as each flow gets wired up. */
-export function NotWiredButton({ className = "btn", children }: { className?: string; children: ReactNode }) {
+type NotWiredButtonProps = {
+  className?: string;
+  /**
+   * What the toast says. Leave it out for a feature that isn't built yet. Pass it for a
+   * simulated action that is meant to stay fake in the prototype (docs/program-rules.md).
+   */
+  message?: string;
+  children: ReactNode;
+};
+
+/** A button that only shows a short message: a feature not built yet, or one the prototype simulates. */
+export function NotWiredButton({ className = "btn", message = "Seda veel pole", children }: NotWiredButtonProps) {
   const [showNotice, setShowNotice] = useState(false);
 
   useEffect(() => {
@@ -17,7 +27,7 @@ export function NotWiredButton({ className = "btn", children }: { className?: st
       <button type="button" className={className} onClick={() => setShowNotice(true)}>
         {children}
       </button>
-      {showNotice && <div className="toast" role="status">Seda veel pole</div>}
+      {showNotice && <div className="toast" role="status">{message}</div>}
     </>
   );
 }

@@ -2,9 +2,9 @@
 
 import { useRouter } from "next/navigation";
 import type { FormEvent } from "react";
-import { school } from "@/lib/sample-data";
 
-export function PrizeForm({ stop }: { stop: number }) {
+/** `school` is settings.donation_school, or null while it loads or when it can't be read. */
+export function PrizeForm({ stop, school }: { stop: number; school: string | null }) {
   const router = useRouter();
 
   function confirmChoice(event: FormEvent<HTMLFormElement>) {
@@ -27,7 +27,9 @@ export function PrizeForm({ stop }: { stop: number }) {
             <input type="radio" name="prize" value="annetus" />
             <span>
               <b>Anneta 5 € kooliraamatukogule</b>
-              Rahva Raamat annab raamatud {school} raamatukogule.
+              {school
+                ? `Rahva Raamat annab raamatud ${school} raamatukogule.`
+                : "Rahva Raamat annab raamatud kooliraamatukogule."}
             </span>
           </label>
         </fieldset>

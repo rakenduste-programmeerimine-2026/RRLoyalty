@@ -75,7 +75,7 @@ It needs `NEXT_PUBLIC_SUPABASE_URL`, `SUPABASE_SECRET_KEY`, `DEMO_EMAIL` and `DE
 
 For a fresh local database: `npx supabase db reset`, then `npm run seed` with `.env.local` pointing at the local server.
 
-**Temporary:** the name-day discount only applies on the name day itself, so `npm run seed:demo-name-days` gives Mari a name day on every date to test it on any day. Remove the script, and every Mari name day except 19 November, once `/demo` (#22) can move "today".
+To test the name day on another date, use "Käivita nimepäev" on `/demo`: it moves the demo date to Mari's next name day.
 
 ## Database tests
 

@@ -1,6 +1,7 @@
 import Link from "next/link";
-import type { ReactNode } from "react";
+import { Suspense, type ReactNode } from "react";
 import { SiteHeader } from "./SiteHeader";
+import { UnreadBadge } from "./UnreadBadge";
 
 /**
  * The account menu, in the prototype's order. A page that isn't built yet has
@@ -11,6 +12,7 @@ const ACCOUNT_PAGES: { label: string; href: string | null }[] = [
   { label: "Minu andmed", href: "/konto/andmed" },
   { label: "Tellimused", href: "/konto/tellimused" },
   { label: "Gustavi rada", href: "/konto/gustavi-rada" },
+  { label: "Postkast", href: "/postkast" },
   { label: "Kinkekaardid", href: "/konto/kinkekaardid" },
   { label: "Annetused", href: "/konto/annetused" },
   { label: "Wallet-kaart", href: "/konto/wallet-kaart" },
@@ -29,7 +31,14 @@ export function AccountShell({ current, children }: { current: string; children:
             {ACCOUNT_PAGES.map(({ label, href }) => (
               <li key={label}>
                 {href ? (
-                  <Link href={href} aria-current={label === current ? "page" : undefined}>{label}</Link>
+                  <Link href={href} aria-current={label === current ? "page" : undefined}>
+                    {label}
+                    {href === "/postkast" && (
+                      <Suspense fallback={null}>
+                        <UnreadBadge />
+                      </Suspense>
+                    )}
+                  </Link>
                 ) : (
                   <span className="side__soon" title="Tuleb peagi">{label}</span>
                 )}

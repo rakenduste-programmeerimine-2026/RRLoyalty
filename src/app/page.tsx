@@ -21,8 +21,15 @@ const groups = [
     ],
   },
   {
+    title: "Sünnipäev",
+    screens: [{ href: "/postkast/sunnipaev", label: "E-kiri: sünnipäev" }],
+  },
+  {
     title: "Konto",
-    screens: [{ href: "/konto/gustavi-rada", label: "Gustavi rada" }],
+    screens: [
+      { href: "/konto/gustavi-rada", label: "Gustavi rada" },
+      { href: "/postkast", label: "Postkast" },
+    ],
   },
 ];
 

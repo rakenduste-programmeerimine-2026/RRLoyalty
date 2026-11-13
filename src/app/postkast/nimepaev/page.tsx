@@ -1,18 +1,18 @@
-import Link from "next/link";
+import type { Metadata } from "next";
 import { GustavScene } from "@/components/Gustav";
-import { Screen } from "@/components/Screen";
-import { member } from "@/lib/sample-data";
+import { PostkastMessage, type MessageSearchParams } from "../PostkastMessage";
 
-export default function NameDayEmail() {
+export const metadata: Metadata = { title: "Postkast · Gustavi rada" };
+
+export default function NameDayEmail({ searchParams }: { searchParams: MessageSearchParams }) {
   return (
-    <Screen
-      title="Postkast"
-      footer={<Link className="btn" href="/nimekaimud">Vaata nimekaimude raamatuid</Link>}
-    >
-      <GustavScene variant="nameday" label="Gustav tähistab nimepäeva" />
-      <h1>Palju õnne nimepäevaks, {member.name}!</h1>
-      <p className="muted">Täna saad −10% kõigilt raamatutelt, mille autor on sinu nimekaim.</p>
-      <p className="note">Kehtib ainult täna e-poes ja kauplustes klubikaardiga.</p>
-    </Screen>
+    <PostkastMessage
+      kind="name_day"
+      path="/postkast/nimepaev"
+      searchParams={searchParams}
+      scene={() => <GustavScene variant="nameday" label="Gustav tähistab nimepäeva" />}
+      note={<p className="note">Kehtib ainult nimepäeval e-poes ja kauplustes klubikaardiga.</p>}
+      button="Vaata nimekaimude raamatuid"
+    />
   );
 }

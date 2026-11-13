@@ -1,5 +1,4 @@
 import Link from "next/link";
-import { nameDayBooks } from "@/lib/sample-data";
 
 const groups = [
   {
@@ -7,7 +6,7 @@ const groups = [
     screens: [
       { href: "/postkast/nimepaev", label: "E-kiri: palju õnne" },
       { href: "/nimekaimud", label: "Sinu nimekaimud" },
-      { href: `/raamat/${nameDayBooks[0].slug}`, label: "Raamatu leht, −10%" },
+      { href: "/raamat/sugisene-raamatupood", label: "Raamatu leht, −10%" },
       { href: "/ostukorv", label: "Ostukorv" },
     ],
   },

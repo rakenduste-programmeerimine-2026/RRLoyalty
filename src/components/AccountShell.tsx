@@ -11,6 +11,7 @@ const ACCOUNT_PAGES: { label: string; href: string | null }[] = [
   { label: "Minu andmed", href: "/konto/andmed" },
   { label: "Tellimused", href: "/konto/tellimused" },
   { label: "Gustavi rada", href: "/konto/gustavi-rada" },
+  { label: "Postkast", href: "/postkast" },
   { label: "Kinkekaardid", href: "/konto/kinkekaardid" },
   { label: "Annetused", href: "/konto/annetused" },
   { label: "Wallet-kaart", href: "/konto/wallet-kaart" },

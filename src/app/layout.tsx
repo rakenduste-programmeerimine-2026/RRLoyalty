@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import { Commissioner, Literata } from "next/font/google";
+import { Suspense } from "react";
+import { PostkastDelivery } from "@/components/PostkastDelivery";
 import "./globals.css";
 
 const commissioner = Commissioner({
@@ -20,7 +22,12 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="et" className={`${commissioner.variable} ${literata.variable}`}>
-      <body>{children}</body>
+      <body>
+        {children}
+        <Suspense fallback={null}>
+          <PostkastDelivery />
+        </Suspense>
+      </body>
     </html>
   );
 }

@@ -1,20 +1,27 @@
-import Link from "next/link";
+import type { Metadata } from "next";
 import { GustavScene } from "@/components/Gustav";
-import { Screen } from "@/components/Screen";
-import { reachedPrizeStop } from "@/lib/sample-data";
+import { PostkastMessage, type MessageSearchParams } from "../PostkastMessage";
 
-export default function HundredPointsEmail() {
+export const metadata: Metadata = { title: "Postkast · Gustavi rada" };
+
+/** The stop in "Sul on 200 punkti – vali oma tasu". */
+const stopIn = (title: string) => Number(title.match(/\d+/)?.[0] ?? 100);
+
+export default function HundredPointsEmail({ searchParams }: { searchParams: MessageSearchParams }) {
   return (
-    <Screen
-      title="Postkast"
-      footer={<Link className="btn" href="/konto/gustavi-rada/tasu">Vali tasu</Link>}
-    >
-      <GustavScene variant="milestone" label={`Gustav jõudis ${reachedPrizeStop} punkti peatusse`} />
-      <h1>Sul on {reachedPrizeStop} punkti – vali oma tasu</h1>
-      <p className="muted">
-        Vali 3 päeva jooksul: 5 € kinkekaart endale või 5 € annetus kooliraamatukogule.
-      </p>
-      <p className="note">Kui sa ei vali, saad kinkekaardi automaatselt 3 päeva jooksul.</p>
-    </Screen>
+    <PostkastMessage
+      kind="points_100"
+      path="/postkast/100-punkti"
+      searchParams={searchParams}
+      scene={(message) => (
+        <GustavScene
+          variant="milestone"
+          stop={stopIn(message.title)}
+          label={`Gustav jõudis ${stopIn(message.title)} punkti peatusse`}
+        />
+      )}
+      note={<p className="note">Kui sa ei vali, saad kinkekaardi automaatselt 3 päeva jooksul.</p>}
+      button="Vali tasu"
+    />
   );
 }

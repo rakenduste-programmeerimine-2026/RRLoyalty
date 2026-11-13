@@ -37,16 +37,17 @@ export function Gustav() {
   );
 }
 
-type SceneProps = { variant: "nameday" | "milestone" | "books"; label: string };
+/** `stop` is the number on the milestone sign (100 when left out). */
+type SceneProps = { variant: "nameday" | "milestone" | "books"; label: string; stop?: number };
 
 const placeGustav = (x: number, y: number, scale: number) =>
   `translate(${x} ${y}) scale(${scale})`;
 
-export function GustavScene({ variant, label }: SceneProps) {
+export function GustavScene({ variant, label, stop = 100 }: SceneProps) {
   return (
     <svg className="scene" viewBox="0 0 440 230" role="img" aria-label={label}>
       {variant === "nameday" && <NameDayBackdrop />}
-      {variant === "milestone" && <MilestoneBackdrop />}
+      {variant === "milestone" && <MilestoneBackdrop stop={stop} />}
       {variant === "books" && <BooksBackdrop />}
       <g transform={variant === "books" ? placeGustav(172, 23, 0.8) : placeGustav(160, 62, 0.95)}>
         <GustavFigure />
@@ -75,7 +76,7 @@ function NameDayBackdrop() {
   );
 }
 
-function MilestoneBackdrop() {
+function MilestoneBackdrop({ stop }: { stop: number }) {
   return (
     <>
       <rect width="440" height="230" fill="#d2e2f1" />
@@ -83,7 +84,7 @@ function MilestoneBackdrop() {
       <path d="M0 196h440" stroke="#006666" strokeDasharray="10 10" strokeWidth="6" />
       <rect x="326" y="90" width="8" height="114" fill="#231e33" />
       <circle cx="330" cy="86" r="42" fill="#d00e40" />
-      <text x="330" y="98" fill="#fdfaf9" fontSize="34" fontWeight="700" textAnchor="middle">100</text>
+      <text x="330" y="98" fill="#fdfaf9" fontSize="34" fontWeight="700" textAnchor="middle">{stop}</text>
       <path fill="#58becc" d="M70 44l6 14 14 6-14 6-6 14-6-14-14-6 14-6z" />
       <path fill="#fdfaf9" d="M112 96l4 9 9 4-9 4-4 9-4-9-9-4 9-4z" />
     </>

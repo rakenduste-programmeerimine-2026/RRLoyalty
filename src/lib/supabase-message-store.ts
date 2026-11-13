@@ -80,6 +80,17 @@ export class SupabaseMessageStore implements MessageStore {
       .is("read_at", null);
     if (error) throw new Error(`Could not mark the message read: ${error.message}`);
   }
+
+  async markAllRead(memberId: string, at: Date): Promise<number> {
+    const { data, error } = await this.db
+      .from("messages")
+      .update({ read_at: at.toISOString() })
+      .eq("member_id", memberId)
+      .is("read_at", null)
+      .select("id");
+    if (error) throw new Error(`Could not mark the messages read: ${error.message}`);
+    return data.length;
+  }
 }
 
 /** The member's first name, name days and the perks that have a message. */
@@ -132,4 +143,9 @@ export function loadMessages(memberId: string): Promise<Message[]> {
 
 export function markMessageReadInSupabase(memberId: string, messageId: number, at: Date): Promise<void> {
   return new SupabaseMessageStore(createAdminClient()).markRead(memberId, messageId, at);
+}
+
+/** "Märgi kõik loetuks". Server only: check memberId with getMember() first. */
+export function markAllMessagesReadInSupabase(memberId: string, at: Date): Promise<number> {
+  return new SupabaseMessageStore(createAdminClient()).markAllRead(memberId, at);
 }

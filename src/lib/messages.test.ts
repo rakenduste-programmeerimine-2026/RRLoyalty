@@ -9,6 +9,7 @@ import {
   pickMessage,
   PRIZE_LINK,
   PRIZE_STOPS,
+  unreadCount,
   type MessageInput,
   type MessagePerk,
 } from "./messages";
@@ -175,5 +176,25 @@ describe("message links", () => {
     // Without an id: the newest of that kind (same time, so the later row).
     expect(pickMessage(messages, "points_100", undefined)?.title).toBe("Sul on 200 punkti – vali oma tasu");
     expect(pickMessage(messages, "birthday", undefined)).toBeNull();
+  });
+});
+
+describe("markAllRead and unreadCount", () => {
+  it("marks every unread message read once, and leaves other members alone", async () => {
+    const store = new MemoryMessageStore();
+    await deliverMessages(store, MEMBER, input({ today: "2026-11-06", perks: [prize(1, 100), birthday(2, 2026)] }));
+    await deliverMessages(store, "member-2", input({ perks: [prize(3, 100)] }));
+    const first = (await store.messages(MEMBER))[0];
+    await store.markRead(MEMBER, first.id, new Date("2026-11-06T09:00:00Z"));
+    expect(unreadCount(await store.messages(MEMBER))).toBe(2);
+
+    const at = new Date("2026-11-06T10:00:00Z");
+    expect(await store.markAllRead(MEMBER, at)).toBe(2);
+    expect(unreadCount(await store.messages(MEMBER))).toBe(0);
+    // The one read earlier keeps its own time.
+    expect((await store.messages(MEMBER)).find((m) => m.id === first.id)?.readAt).toEqual(new Date("2026-11-06T09:00:00Z"));
+
+    expect(await store.markAllRead(MEMBER, at)).toBe(0);
+    expect(unreadCount(await store.messages("member-2"))).toBe(1);
   });
 });

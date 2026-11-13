@@ -2,6 +2,7 @@ import Link from "next/link";
 import { connection } from "next/server";
 import { SIGN_IN_PATH } from "@/lib/auth-redirect";
 import { createClient } from "@/lib/supabase/server";
+import { unreadMessageCount } from "@/lib/supabase-unread";
 import { MemberMenu } from "./MemberMenu";
 
 /**
@@ -31,5 +32,5 @@ export async function HeaderMember() {
   }
 
   if (!name) return <Link href={SIGN_IN_PATH}>Logi sisse</Link>;
-  return <MemberMenu name={name} />;
+  return <MemberMenu name={name} unread={await unreadMessageCount()} />;
 }

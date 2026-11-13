@@ -4,6 +4,7 @@ import { Suspense } from "react";
 import { Screen } from "@/components/Screen";
 import { ShopError, ShopLoading } from "@/components/ShopError";
 import { getMember } from "@/lib/auth";
+import { getNow } from "@/lib/demo-now";
 import { formatDate } from "@/lib/rail-account";
 import { donationSchool } from "@/lib/settings";
 import { loadOpenPrize, type OpenPrize } from "@/lib/supabase-prize";
@@ -30,7 +31,7 @@ async function OpenPrizeForm() {
   let prize: OpenPrize | null;
   let school: string | null;
   try {
-    [prize, school] = await Promise.all([loadOpenPrize(new Date()), donationSchool()]);
+    [prize, school] = await Promise.all([loadOpenPrize(await getNow()), donationSchool()]);
   } catch (error) {
     console.error("Could not load the prize choice", error);
     return <ShopError title={TITLE} backTo={BACK} retry={PATH} />;

@@ -7,6 +7,7 @@ import { NotWiredButton } from "@/components/NotWiredButton";
 import { Screen } from "@/components/Screen";
 import { ShopError, ShopLoading } from "@/components/ShopError";
 import { getMember } from "@/lib/auth";
+import { getNow } from "@/lib/demo-now";
 import type { GiftCardRow } from "@/lib/gift-cards";
 import { qrSvg } from "@/lib/qr";
 import { formatDate } from "@/lib/rail-account";
@@ -59,7 +60,7 @@ async function GiftCardDetails({ params }: { params: Params }) {
         validUntil={formatDate(card.validUntil)}
         qrSvg={await qrSvg(card.code)}
         used={card.redeemedAt !== null}
-        expired={card.redeemedAt === null && card.validUntil <= new Date()}
+        expired={card.redeemedAt === null && card.validUntil <= (await getNow())}
       />
     </Screen>
   );

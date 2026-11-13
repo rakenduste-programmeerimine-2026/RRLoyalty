@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { getMember } from "@/lib/auth";
+import { getNow } from "@/lib/demo-now";
 import { perkRefusalMessage } from "@/lib/perk-messages";
 import type { DrinkOrApp, PrizeChoice } from "@/lib/perks";
 import { choosePrizeInSupabase, redeemPerkInSupabase } from "@/lib/supabase-perk-store";
@@ -20,7 +21,8 @@ export async function choosePrizeAction(perkId: number, _state: PerkActionState,
 
   let target: string;
   try {
-    const result = await choosePrizeInSupabase(member.id, perkId, choice);
+    // At the /demo date, so the 3 days to choose follow the demo clock.
+    const result = await choosePrizeInSupabase(member.id, perkId, choice, await getNow());
     if (result.status !== "chosen") return { error: perkRefusalMessage(result.status) };
     const cardId = result.choice === "gift_card" ? await giftCardIdForPerk(perkId) : null;
     target = cardId ? `/konto/kinkekaardid/${cardId}` : result.choice === "gift_card" ? "/konto/kinkekaardid" : "/konto/gustavi-rada/annetus";
@@ -37,7 +39,7 @@ export async function choosePrizeAction(perkId: number, _state: PerkActionState,
 export async function redeemPerkAction(perkId: number, choice: DrinkOrApp | null): Promise<PerkActionState> {
   const member = await getMember("/konto/gustavi-rada");
   try {
-    const result = await redeemPerkInSupabase(member.id, perkId, new Date(), choice ?? undefined);
+    const result = await redeemPerkInSupabase(member.id, perkId, await getNow(), choice ?? undefined);
     if (result.status !== "redeemed") return { error: perkRefusalMessage(result.status) };
     revalidatePath("/konto", "layout");
     return { done: true, code: result.code ?? undefined };

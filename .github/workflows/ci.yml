@@ -37,3 +37,71 @@ jobs:
 
       - name: Build
         run: npm run build
+
+  e2e:
+    # The critical flows (#20), against a fresh local Supabase with the seed:
+    # never the hosted project, since the tests record purchases and spend perks.
+    name: Playwright flows (local Supabase)
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      DEMO_EMAIL: mari.e2e@example.com
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+
+      - run: npm ci
+
+      - name: Generate a one-off demo password
+        run: |
+          password="$(openssl rand -hex 16)"
+          echo "::add-mask::$password"
+          echo "DEMO_PASSWORD=$password" >> "$GITHUB_ENV"
+
+      - name: Start a local Supabase (all migrations, empty data)
+        run: npx supabase start
+
+      - name: Point the app and the seed at it
+        run: |
+          npx supabase status -o json > "$RUNNER_TEMP/supabase-status.json"
+          node -e '
+            const fs = require("fs");
+            const s = JSON.parse(fs.readFileSync(process.argv[1], "utf8"));
+            const pick = (...keys) => keys.map((k) => s[k]).find(Boolean);
+            const env = {
+              NEXT_PUBLIC_SUPABASE_URL: pick("API_URL"),
+              NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY: pick("PUBLISHABLE_KEY", "ANON_KEY"),
+              SUPABASE_SECRET_KEY: pick("SECRET_KEY", "SERVICE_ROLE_KEY"),
+              DEMO_EMAIL: process.env.DEMO_EMAIL,
+              DEMO_PASSWORD: process.env.DEMO_PASSWORD,
+            };
+            const missing = Object.entries(env).filter(([, v]) => !v).map(([k]) => k);
+            if (missing.length) { console.error("Missing:", missing.join(", "), "| status keys:", Object.keys(s).join(", ")); process.exit(1); }
+            fs.writeFileSync(".env.local", Object.entries(env).map(([k, v]) => `${k}=${v}`).join("\n") + "\n");
+          ' "$RUNNER_TEMP/supabase-status.json"
+
+      - name: Seed the demo data
+        run: npm run seed
+
+      - name: Install the browser
+        run: npx playwright install --with-deps chromium
+
+      - name: Build
+        run: npm run build
+
+      - name: Run the flows
+        run: npx playwright test
+
+      - name: Keep the report
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report
+          path: |
+            playwright-report/
+            test-results/
+          retention-days: 7

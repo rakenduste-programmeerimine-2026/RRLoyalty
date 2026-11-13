@@ -2,6 +2,7 @@
 
 import "server-only";
 import type { SupabaseClient } from "@supabase/supabase-js";
+import { openingCode } from "./perks";
 import type { PurchaseOutcome } from "./points";
 import { recordPurchase, type PurchaseRequest, type RecordedPurchase } from "./purchases";
 import type { Channel, LapPosition, NewPurchase, PointsWrite, PurchaseStore, SavedPurchase } from "./purchase-store";
@@ -80,6 +81,8 @@ export class SupabasePurchaseStore implements PurchaseStore {
         opened_at: perk.openedAt.toISOString(),
         expires_at: perk.expiresAt.toISOString(),
         choose_by: perk.chooseBy?.toISOString() ?? null,
+        // Stop 150 is shown as a code only, so it opens with one.
+        code: openingCode(perk.stopAt),
       })),
     });
     if (error) throw new Error(`Could not write the purchase's points: ${error.message}`);

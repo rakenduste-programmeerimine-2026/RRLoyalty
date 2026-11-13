@@ -127,6 +127,13 @@ export interface MessageStore {
   messages(memberId: string): Promise<Message[]>;
   /** Sets read_at if it is still empty. */
   markRead(memberId: string, messageId: number, at: Date): Promise<void>;
+  /** "Märgi kõik loetuks": sets read_at on every unread message. Returns how many changed. */
+  markAllRead(memberId: string, at: Date): Promise<number>;
+}
+
+/** How many of the messages are unread, for "Postkast (2)". */
+export function unreadCount(messages: Pick<Message, "readAt">[]): number {
+  return messages.filter((message) => message.readAt === null).length;
 }
 
 /** Creates the member's missing messages. Returns how many were added. */

@@ -29,4 +29,14 @@ export class MemoryMessageStore implements MessageStore {
     const row = this.rows.find((r) => r.memberId === memberId && r.id === messageId);
     if (row && row.readAt === null) row.readAt = at;
   }
+
+  async markAllRead(memberId: string, at: Date): Promise<number> {
+    let changed = 0;
+    for (const row of this.rows) {
+      if (row.memberId !== memberId || row.readAt !== null) continue;
+      row.readAt = at;
+      changed += 1;
+    }
+    return changed;
+  }
 }

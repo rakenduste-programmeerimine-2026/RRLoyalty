@@ -5,7 +5,7 @@ import { useEffect, useRef, useState } from "react";
 import { signOut } from "@/app/logi-sisse/actions";
 
 /** "Mari ▾" in the header: a small menu with "Minu konto" and "Logi välja", which asks first. */
-export function MemberMenu({ name }: { name: string }) {
+export function MemberMenu({ name, unread = 0 }: { name: string; unread?: number }) {
   const [open, setOpen] = useState(false);
   const menu = useRef<HTMLDivElement>(null);
   const dialog = useRef<HTMLDialogElement>(null);
@@ -30,13 +30,13 @@ export function MemberMenu({ name }: { name: string }) {
   return (
     <div className="member-menu" ref={menu}>
       <button type="button" className="member-menu__toggle" aria-expanded={open} onClick={() => setOpen(!open)}>
-        Tere, {name}! ▾
+        Tere, {name}! ▾{unread > 0 && <span className="unread-badge" aria-label={`${unread} lugemata`}>{unread}</span>}
       </button>
       {open && (
         <ul className="member-menu__list">
           <li><Link href="/konto" onClick={() => setOpen(false)}>Minu konto</Link></li>
           <li><Link href="/konto/gustavi-rada" onClick={() => setOpen(false)}>Gustavi rada</Link></li>
-          <li><Link href="/postkast" onClick={() => setOpen(false)}>Postkast</Link></li>
+          <li><Link href="/postkast" onClick={() => setOpen(false)}>{unread > 0 ? `Postkast (${unread})` : "Postkast"}</Link></li>
           <li>
             <button
               type="button"

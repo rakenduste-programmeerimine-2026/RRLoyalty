@@ -6,9 +6,10 @@ import { Screen } from "@/components/Screen";
 import { ShopError, ShopLoading } from "@/components/ShopError";
 import { getMember } from "@/lib/auth";
 import { getNow } from "@/lib/demo-now";
-import { messageScreen, type Message } from "@/lib/messages";
+import { messageScreen, unreadCount, type Message } from "@/lib/messages";
 import { formatDate } from "@/lib/rail-account";
 import { deliverMessagesInSupabase, loadMessages } from "@/lib/supabase-message-store";
+import { markAllReadAction } from "./actions";
 
 export const metadata: Metadata = { title: "Postkast · Gustavi rada" };
 
@@ -36,9 +37,21 @@ async function InboxContent() {
     return <ShopError title={TITLE} backTo="/konto" retry={PATH} />;
   }
 
+  const unread = unreadCount(messages);
+
   return (
     <Screen title="Minu konto" backTo="/konto">
       <h1>Postkast</h1>
+      <div className="inbox-bar">
+        <span className="muted small" role="status">
+          {unread === 0 ? "Kõik kirjad on loetud" : unread === 1 ? "1 lugemata kiri" : `${unread} lugemata kirja`}
+        </span>
+        {unread > 0 && (
+          <form action={markAllReadAction}>
+            <button type="submit" className="textlink">Märgi kõik loetuks</button>
+          </form>
+        )}
+      </div>
       {messages.length === 0 ? (
         <p className="muted">Kirju veel pole. Siia tulevad nimepäeva, sünnipäeva ja Gustavi raja tasude kirjad.</p>
       ) : (
@@ -56,6 +69,7 @@ async function InboxContent() {
           ))}
         </ul>
       )}
+      <Link className="textlink" href="/konto/uudiskirjad">Halda teavitusi ja e-kirju</Link>
     </Screen>
   );
 }

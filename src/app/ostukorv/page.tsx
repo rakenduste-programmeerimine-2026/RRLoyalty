@@ -2,6 +2,7 @@ import { connection } from "next/server";
 import { Suspense } from "react";
 import { ShopError, ShopLoading } from "@/components/ShopError";
 import { getMember } from "@/lib/auth";
+import { getNow } from "@/lib/demo-now";
 import { formatDayEt, type Shop } from "@/lib/namesakes";
 import { loadShopFromSupabase } from "@/lib/supabase-shop-store";
 import { Bag } from "./Bag";
@@ -24,7 +25,7 @@ async function PricedBag() {
 
   let shop: Shop;
   try {
-    shop = await loadShopFromSupabase(member.id);
+    shop = await loadShopFromSupabase(member.id, await getNow());
   } catch (error) {
     console.error("Could not load the bag's prices", error);
     return <ShopError title={TITLE} backTo={BACK} retry="/ostukorv" />;

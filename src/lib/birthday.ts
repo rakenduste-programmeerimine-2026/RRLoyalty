@@ -8,7 +8,7 @@
 // "today" is a "YYYY-MM-DD" calendar day passed in by the caller, so /demo
 // can trigger a birthday without touching the system clock.
 
-import { DAY_MS, parseDay } from "./calendar-day";
+import { DAY_MS, formatDay, parseDay } from "./calendar-day";
 import { randomCodePart } from "./codes";
 import { PERK_DAYS } from "./points";
 
@@ -40,6 +40,16 @@ export function isBirthday(birthday: string, today: string): boolean {
   if (month === 1 && day === 29 && !isLeapYear(now.getUTCFullYear())) day = 28;
 
   return now.getUTCMonth() === month && now.getUTCDate() === day;
+}
+
+/** The first day from `today` on, today included, that isBirthday() is true. For /demo's birthday jump. */
+export function nextBirthday(birthday: string, today: string): string {
+  const start = Math.max(parseDay(today), parseDay(birthday));
+  // At most a year and a day ahead.
+  for (let time = start; time <= start + 367 * DAY_MS; time += DAY_MS) {
+    if (isBirthday(birthday, formatDay(time))) return formatDay(time);
+  }
+  throw new RangeError(`No birthday found after ${today} for ${birthday}`);
 }
 
 /** A code like SYNNIPAEV-7K2M. Pass bytes in tests; otherwise they are random. */

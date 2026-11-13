@@ -87,7 +87,7 @@ export function railView(points: PointsRow | null, perks: PerkRow[], history: Hi
   const lastPurchaseAt = points?.lastPurchaseAt ?? null;
   const validUntil = lastPurchaseAt ? pointsExpireAt(lastPurchaseAt) : null;
   const lapPoints = points?.currentLapPoints ?? 0;
-  // The expiry row is written on the next purchase (#21), so treat overdue points as expired here.
+  // The expiry row is written with the next purchase (purchases.ts), so treat overdue points as expired here.
   const expired = validUntil !== null && now >= validUntil && lapPoints > 0;
 
   return {

@@ -5,6 +5,7 @@ import { BookCover } from "@/components/BookCover";
 import { Screen } from "@/components/Screen";
 import { ShopError, ShopLoading } from "@/components/ShopError";
 import { getMember } from "@/lib/auth";
+import { getNow } from "@/lib/demo-now";
 import { formatEur } from "@/lib/money";
 import { namesakeBooks, type Shop } from "@/lib/namesakes";
 import { loadShopFromSupabase } from "@/lib/supabase-shop-store";
@@ -27,7 +28,7 @@ async function Namesakes() {
 
   let shop: Shop;
   try {
-    shop = await loadShopFromSupabase(member.id);
+    shop = await loadShopFromSupabase(member.id, await getNow());
   } catch (error) {
     console.error("Could not load the namesake books", error);
     return <ShopError title={TITLE} backTo={BACK} retry="/nimekaimud" />;

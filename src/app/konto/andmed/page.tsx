@@ -4,6 +4,7 @@ import { connection } from "next/server";
 import { Suspense } from "react";
 import { AccountShell } from "@/components/AccountShell";
 import { getMember } from "@/lib/auth";
+import { getNow } from "@/lib/demo-now";
 import { formatDayEt, todayInEstonia } from "@/lib/namesakes";
 import { daysUntil, nextNameDay } from "@/lib/profile";
 import { loadProfile, type Profile } from "@/lib/supabase-profile";
@@ -56,7 +57,7 @@ async function ProfileContent() {
     );
   }
 
-  const today = todayInEstonia();
+  const today = todayInEstonia(await getNow());
   const nameDay = nextNameDay(profile.nameDays, today);
   const inDays = nameDay ? daysUntil(nameDay, today) : null;
 

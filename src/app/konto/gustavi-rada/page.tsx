@@ -6,6 +6,7 @@ import { NotWiredButton } from "@/components/NotWiredButton";
 import { AccountShell } from "@/components/AccountShell";
 import { Rail } from "@/components/Rail";
 import { getMember } from "@/lib/auth";
+import { getNow } from "@/lib/demo-now";
 import { nextStop, pointsToNext } from "@/lib/rail";
 import { formatDate, formatDayMonth, historyLabel, type PerkView, type RailView } from "@/lib/rail-account";
 import { loadRailFromSupabase } from "@/lib/supabase-rail-store";
@@ -43,7 +44,7 @@ async function RailContent({ searchParams }: { searchParams: SearchParams }) {
 
   let view: RailView;
   try {
-    view = await loadRailFromSupabase(member.id, limit);
+    view = await loadRailFromSupabase(member.id, limit, await getNow());
   } catch (error) {
     console.error("Could not load the Gustavi rada page", error);
     return (

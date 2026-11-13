@@ -4,7 +4,12 @@
 //
 // Safe to retry: the channel's externalRef is unique, and points are written
 // once per purchase, so sending the same purchase again never awards points twice.
+//
+// Points expire 6 months after the last purchase. The expiry row is written
+// here, with the purchase that comes after it, so that purchase starts the
+// lap from 0. Until then the pages count overdue points as 0 (laps.ts).
 
+import { pointsExpireAt } from "./laps";
 import { earnFromPurchase } from "./points";
 import type { Channel, PurchaseStatus, PurchaseStore } from "./purchase-store";
 
@@ -88,9 +93,19 @@ export async function recordPurchase(store: PurchaseStore, request: PurchaseRequ
 
   // Also runs on a retry: if an earlier attempt saved the purchase but failed
   // before its points were written, this finishes the job.
-  const position = await store.lapPosition(purchase.memberId);
-  const outcome = earnFromPurchase({ ...position, amountPaid: purchase.amountPaid, at: purchase.purchasedAt });
-  const written = await store.recordPurchasePoints(purchase.memberId, purchase.id, outcome);
+  const position = await store.lapPosition(purchase.memberId, purchase);
+  const expiresAt = position.lastPurchaseAt ? pointsExpireAt(position.lastPurchaseAt) : null;
+  const expiry =
+    expiresAt !== null && purchase.purchasedAt >= expiresAt && position.lapPoints > 0
+      ? { points: -position.lapPoints, at: expiresAt }
+      : null;
+  const outcome = earnFromPurchase({
+    lap: position.lap,
+    lapPoints: expiry ? 0 : position.lapPoints,
+    amountPaid: purchase.amountPaid,
+    at: purchase.purchasedAt,
+  });
+  const written = await store.recordPurchasePoints(purchase.memberId, purchase.id, outcome, expiry);
 
   return {
     purchaseId: purchase.id,

@@ -72,7 +72,9 @@ export class SupabaseRailStore implements RailStore {
       .from("points_ledger")
       .select("kind, points, created_at, purchases(purchased_at, channel, location)")
       .eq("member_id", memberId)
-      .order("created_at", { ascending: false })
+      // The ledger is append-only, so id is the order the rows happened in. An
+      // expiry row is dated when the points expired, before the purchase written with it.
+      .order("id", { ascending: false })
       .limit(limit)
       .returns<
         {

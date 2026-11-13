@@ -5,6 +5,7 @@ import {
   birthdayCode,
   giveBirthdayCard,
   isBirthday,
+  nextBirthday,
   type BirthdayCard,
   type BirthdayStore,
 } from "./birthday";
@@ -139,5 +140,26 @@ describe("giveBirthdayCard", () => {
 
     expect(other.status).toBe("given");
     expect(store.perks).toHaveLength(2);
+  });
+});
+
+describe("nextBirthday", () => {
+  it("is this year's birthday when it is still ahead, today included", () => {
+    expect(nextBirthday("1990-11-14", "2026-11-13")).toBe("2026-11-14");
+    expect(nextBirthday("1990-11-14", "2026-11-14")).toBe("2026-11-14");
+  });
+
+  it("is next year's once this year's has passed", () => {
+    expect(nextBirthday("1990-11-14", "2026-11-15")).toBe("2027-11-14");
+  });
+
+  it("is 28 February for someone born on 29 February in a year without one", () => {
+    expect(nextBirthday("2000-02-29", "2026-11-13")).toBe("2027-02-28");
+    expect(nextBirthday("2000-02-29", "2027-11-13")).toBe("2028-02-29");
+  });
+
+  it("is the day the card is given", () => {
+    const day = nextBirthday("2000-02-29", "2026-11-13");
+    expect(isBirthday("2000-02-29", day)).toBe(true);
   });
 });

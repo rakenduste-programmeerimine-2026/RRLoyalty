@@ -2,6 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { getMember } from "@/lib/auth";
+import { getNow } from "@/lib/demo-now";
 import { todayInEstonia } from "@/lib/namesakes";
 import { checkProfile, type ProfileErrors, type ProfileInput } from "@/lib/profile";
 import { saveProfileInSupabase } from "@/lib/supabase-profile";
@@ -22,7 +23,7 @@ export async function saveProfile(_state: ProfileFormState, formData: FormData):
     phone: String(formData.get("phone") ?? ""),
     birthday: String(formData.get("birthday") ?? ""),
   };
-  const check = checkProfile(values, todayInEstonia());
+  const check = checkProfile(values, todayInEstonia(await getNow()));
   if (!check.ok) return { status: "invalid", errors: check.errors, values };
 
   try {

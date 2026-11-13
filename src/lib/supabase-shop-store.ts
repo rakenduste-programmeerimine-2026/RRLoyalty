@@ -3,6 +3,7 @@
 
 import "server-only";
 import type { SupabaseClient } from "@supabase/supabase-js";
+import { lapPointsOf } from "./laps";
 import type { NameDay } from "./name-day";
 import { loadShop, todayInEstonia, type CatalogBook, type Shop, type ShopStore } from "./namesakes";
 import { createAdminClient } from "./supabase/admin";
@@ -17,7 +18,11 @@ type BookRow = {
 };
 
 export class SupabaseShopStore implements ShopStore {
-  constructor(private readonly db: SupabaseClient) {}
+  /** `now` decides whether the lap points have expired. */
+  constructor(
+    private readonly db: SupabaseClient,
+    private readonly now: Date = new Date(),
+  ) {}
 
   async memberFirstName(memberId: string): Promise<string | null> {
     const { data, error } = await this.db
@@ -62,15 +67,18 @@ export class SupabaseShopStore implements ShopStore {
   async lapPoints(memberId: string): Promise<number> {
     const { data, error } = await this.db
       .from("member_points")
-      .select("current_lap_points")
+      .select("current_lap_points, last_purchase_at")
       .eq("member_id", memberId)
-      .maybeSingle<{ current_lap_points: number }>();
+      .maybeSingle<{ current_lap_points: number; last_purchase_at: string | null }>();
     if (error) throw new Error(`Could not read the member's points: ${error.message}`);
-    return Number(data?.current_lap_points ?? 0);
+    return lapPointsOf(data, this.now);
   }
 }
 
-/** The shop for the signed-in member today. Server only: the caller must have checked memberId with getMember(). */
-export function loadShopFromSupabase(memberId: string, today: string = todayInEstonia()): Promise<Shop> {
-  return loadShop(new SupabaseShopStore(createAdminClient()), memberId, today);
+/**
+ * The shop for the signed-in member at `now` (the demo clock's, see demo-clock.ts).
+ * Server only: the caller must have checked memberId with getMember().
+ */
+export function loadShopFromSupabase(memberId: string, now: Date = new Date()): Promise<Shop> {
+  return loadShop(new SupabaseShopStore(createAdminClient(), now), memberId, todayInEstonia(now));
 }

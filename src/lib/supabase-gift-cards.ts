@@ -7,6 +7,7 @@ import { createClient } from "./supabase/server";
 
 type GiftCardDbRow = {
   id: number;
+  perk_id: number;
   code: string;
   amount: number | string;
   min_purchase: number | string;
@@ -14,10 +15,11 @@ type GiftCardDbRow = {
   perks: { stop_at: number | null; redeemed_at: string | null } | null;
 };
 
-const GIFT_CARD_COLUMNS = "id, code, amount, min_purchase, valid_until, perks(stop_at, redeemed_at)";
+const GIFT_CARD_COLUMNS = "id, perk_id, code, amount, min_purchase, valid_until, perks(stop_at, redeemed_at)";
 
 const toGiftCard = (row: GiftCardDbRow): GiftCardRow => ({
   id: row.id,
+  perkId: row.perk_id,
   code: row.code,
   amount: Number(row.amount),
   minPurchase: Number(row.min_purchase),

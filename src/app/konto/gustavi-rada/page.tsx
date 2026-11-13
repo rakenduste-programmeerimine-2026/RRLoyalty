@@ -2,13 +2,13 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { connection } from "next/server";
 import { Suspense } from "react";
-import { NotWiredButton } from "@/components/NotWiredButton";
 import { AccountShell } from "@/components/AccountShell";
 import { Rail } from "@/components/Rail";
 import { getMember } from "@/lib/auth";
 import { nextStop, pointsToNext } from "@/lib/rail";
 import { formatDate, formatDayMonth, historyLabel, type PerkView, type RailView } from "@/lib/rail-account";
 import { loadRailFromSupabase } from "@/lib/supabase-rail-store";
+import { PerkActions } from "./PerkActions";
 
 export const metadata: Metadata = { title: "Gustavi rada · Minu konto" };
 
@@ -135,14 +135,7 @@ function PerkPanel({ perks, nextLabel }: { perks: PerkView[]; nextLabel: string 
       {perk.code && <p className="code">{perk.code}</p>}
       {more.length > 0 && <p className="muted small">Lisaks veel {more.length} avatud hüve.</p>}
       <div className="perk__actions">
-        {perk.choosing && <Link className="btn btn--auto" href={`${PATH}/tasu`}>Vali tasu</Link>}
-        {/* Showing and spending perks comes with perk redemption (#14) and the prize flow (#18). */}
-        {perk.stopAt === 50 && (
-          <>
-            <NotWiredButton className="btn btn--auto">Näita QR-koodi</NotWiredButton>
-            <NotWiredButton className="textlink">Vali hoopis nädal tasuta äpis</NotWiredButton>
-          </>
-        )}
+        <PerkActions perkId={perk.id} stopAt={perk.stopAt} choice={perk.choice} choosing={perk.choosing} />
       </div>
     </section>
   );

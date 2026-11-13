@@ -6,6 +6,7 @@ const day = (iso: string) => new Date(`${iso}T10:00:00Z`);
 
 const card = (overrides: Partial<GiftCardRow>): GiftCardRow => ({
   id: 1,
+  perkId: 11,
   code: "GUSTAV-AAAA-5EUR",
   amount: 5,
   minPurchase: 20,

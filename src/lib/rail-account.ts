@@ -24,6 +24,8 @@ export type PerkRow = {
   choice: string | null;
   code: string | null;
   redeemedAt: Date | null;
+  /** The gift card a prize became: its 60 days start from the choice, not the stop (#14). */
+  giftCardValidUntil: Date | null;
 };
 
 /** A points_ledger row, with its purchase for earn rows. */
@@ -48,6 +50,8 @@ export type PerkView = {
   id: number;
   /** Null for the birthday card. */
   stopAt: number | null;
+  /** "gift_card", "donation", "hot_drink" or "app_week" once chosen, otherwise null. */
+  choice: string | null;
   title: string;
   expiresAt: Date;
   /** A prize stop whose 3 days to choose are still running. */
@@ -97,13 +101,14 @@ export function railView(points: PointsRow | null, perks: PerkRow[], history: Hi
     validUntil,
     expired,
     perks: perks
-      .filter((perk) => perk.redeemedAt === null && perk.expiresAt > now)
+      .filter((perk) => perk.redeemedAt === null && (perk.giftCardValidUntil ?? perk.expiresAt) > now)
       .sort((a, b) => b.openedAt.getTime() - a.openedAt.getTime())
       .map((perk) => ({
         id: perk.id,
         stopAt: perk.stopAt,
+        choice: perk.choice,
         title: perkTitle(perk),
-        expiresAt: perk.expiresAt,
+        expiresAt: perk.giftCardValidUntil ?? perk.expiresAt,
         choosing:
           perk.stopAt !== null &&
           PRIZE_STOPS.has(perk.stopAt) &&

@@ -1,58 +1,39 @@
 "use client";
 
-import { useState, useSyncExternalStore } from "react";
+import { useState, useTransition } from "react";
+import { redeemPerkAction } from "@/app/konto/gustavi-rada/actions";
 
-// Until perk redemption is stored on the server (#14), "used" is remembered in this browser only.
-const keyFor = (code: string) => `gustavi-rada:kasutatud:${code}`;
+type GiftCardPerkProps = {
+  /** The perk the card came from: "Märgi kasutatuks" spends it on the server (#14). */
+  perkId: number;
+  code: string;
+  validUntil: string;
+  qrSvg: string;
+  used: boolean;
+  expired: boolean;
+};
 
-const listeners = new Set<() => void>();
-
-function subscribe(listener: () => void) {
-  listeners.add(listener);
-  window.addEventListener("storage", listener);
-  return () => {
-    listeners.delete(listener);
-    window.removeEventListener("storage", listener);
-  };
-}
-
-function readUsed(code: string): boolean {
-  try {
-    return window.localStorage.getItem(keyFor(code)) !== null;
-  } catch {
-    return false;
-  }
-}
-
-function writeUsed(code: string, used: boolean) {
-  try {
-    if (used) window.localStorage.setItem(keyFor(code), new Date().toISOString());
-    else window.localStorage.removeItem(keyFor(code));
-  } catch {
-    // Storage can be blocked; nothing to remember then.
-  }
-  listeners.forEach((listener) => listener());
-}
-
-type GiftCardPerkProps = { code: string; validUntil: string; qrSvg: string };
-
-export function GiftCardPerk({ code, validUntil, qrSvg }: GiftCardPerkProps) {
-  const used = useSyncExternalStore<boolean | undefined>(subscribe, () => readUsed(code), () => undefined);
+export function GiftCardPerk({ perkId, code, validUntil, qrSvg, used, expired }: GiftCardPerkProps) {
   const [confirming, setConfirming] = useState(false);
+  const [error, setError] = useState<string>();
+  const [saving, startSaving] = useTransition();
 
-  if (used === undefined) {
-    return <p className="muted" role="status">Laen kinkekaarti…</p>;
+  function markUsed() {
+    setError(undefined);
+    startSaving(async () => {
+      const result = await redeemPerkAction(perkId, null);
+      // On success the page reloads from the server and shows the used card.
+      if (result?.error) setError(result.error);
+      setConfirming(false);
+    });
   }
 
-  if (used) {
+  if (used || expired) {
     return (
       <>
-        <h1>Kinkekaart on kasutatud</h1>
+        <h1>{used ? "Kinkekaart on kasutatud" : "Kinkekaart on aegunud"}</h1>
         <p className="code code--used">{code}</p>
         <p className="muted small">Seda kinkekaarti ei saa enam kasutada.</p>
-        <button type="button" className="textlink" onClick={() => writeUsed(code, false)}>
-          Taasta kasutamata (demo)
-        </button>
       </>
     );
   }
@@ -63,11 +44,14 @@ export function GiftCardPerk({ code, validUntil, qrSvg }: GiftCardPerkProps) {
       <div className="qr" role="img" aria-label={`QR-kood: ${code}`} dangerouslySetInnerHTML={{ __html: qrSvg }} />
       <p className="code">{code}</p>
       <p className="muted small">kehtib kuni {validUntil} · ostul alates 20 €</p>
+      {error && <p className="form-error" role="alert">{error}</p>}
       {confirming ? (
         <div className="confirm" role="group" aria-label="Kinnita kasutamine">
           <span className="small">Märkida kinkekaart kasutatuks?</span>
-          <button type="button" className="textlink" onClick={() => writeUsed(code, true)}>Jah</button>
-          <button type="button" className="textlink" onClick={() => setConfirming(false)}>Tühista</button>
+          <button type="button" className="textlink" disabled={saving} onClick={markUsed}>
+            {saving ? "Salvestan…" : "Jah"}
+          </button>
+          <button type="button" className="textlink" disabled={saving} onClick={() => setConfirming(false)}>Tühista</button>
         </div>
       ) : (
         <button type="button" className="textlink" onClick={() => setConfirming(true)}>

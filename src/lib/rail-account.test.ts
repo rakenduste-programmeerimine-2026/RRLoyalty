@@ -30,6 +30,7 @@ const perk = (overrides: Partial<PerkRow>): PerkRow => ({
   choice: null,
   code: null,
   redeemedAt: null,
+  giftCardValidUntil: null,
   ...overrides,
 });
 
@@ -88,6 +89,16 @@ describe("railView perks", () => {
 
     const donated = perk({ stopAt: 200, choice: "donation", chooseBy: day("2026-11-12") });
     expect(railView(points(), [donated], [], now).perks[0]).toMatchObject({ choosing: false, title: "5 € annetus kooliraamatukogule" });
+  });
+
+  it("dates a chosen gift card by the card, whose 60 days start from the choice", () => {
+    // Stop opened 08.11 (perk ends 07.01), card chosen 10.11, so the card runs to 09.01.
+    const chosen = perk({ stopAt: 100, choice: "gift_card", expiresAt: day("2027-01-07"), giftCardValidUntil: day("2027-01-09") });
+    expect(railView(points(), [chosen], [], now).perks[0]).toMatchObject({ title: "5 € kinkekaart", expiresAt: day("2027-01-09") });
+
+    // Still listed after the perk's own 60 days, while the card is valid.
+    const later = new Date("2027-01-08T12:00:00Z");
+    expect(railView(points(), [chosen], [], later).perks.map((p) => p.id)).toEqual([chosen.id]);
   });
 });
 

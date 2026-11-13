@@ -4,6 +4,8 @@
 /** A gift_cards row with its perk. */
 export type GiftCardRow = {
   id: number;
+  /** The perk the card came from: "Märgi kasutatuks" spends that perk. */
+  perkId: number;
   code: string;
   amount: number;
   minPurchase: number;

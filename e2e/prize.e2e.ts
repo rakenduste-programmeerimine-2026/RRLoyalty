@@ -32,10 +32,10 @@ test.describe.serial("prize stops", () => {
 
     await expect(page).toHaveURL(/\/konto\/gustavi-rada\/annetus$/);
     await expect(page.getByRole("heading", { name: "Aitäh!" })).toBeVisible();
-    await expect(page.getByText("Sinu 5 € läheb Näidiskooli raamatukogule.")).toBeVisible();
+    await expect(page.getByText("Sinu 5 € läheb Näidiskooli raamatukogule.").filter({ visible: true })).toBeVisible();
 
     await page.goto("/konto/annetused");
-    await expect(page.getByText("Kokku annetatud")).toBeVisible();
-    await expect(page.getByText("Näidiskooli raamatukogu").first()).toBeVisible();
+    await expect(page.getByText("Kokku annetatud").filter({ visible: true })).toBeVisible();
+    await expect(page.getByText("Näidiskooli raamatukogu").filter({ visible: true }).first()).toBeVisible();
   });
 });

@@ -82,3 +82,11 @@ For a fresh local database: `npx supabase db reset`, then `npm run seed` with `.
 `npm run test:db` runs the SQL tests in `supabase/tests/` against the local Supabase server, so Docker and `npx supabase start` are needed. `rls.test.sql` checks the row-level security policies: a member reads only their own data, a visitor reads only the public program and shop data, and nobody but the server can change anything. The tests roll back, so they leave the database as it was.
 
 GitHub Actions does not run these tests, so run them before opening a PR that changes the database.
+
+## Flow tests (Playwright)
+
+`e2e/` holds the critical flows only: the name-day flow (Postkast → namesake book at −10% → bag → "Maksa") and the 100-point flow with both prize choices (gift card at 100, donation at 200). They set up state through `/demo`, sign in as the seeded demo member, and **write real purchases and perks**, so they run against a fresh local Supabase, never the hosted project.
+
+GitHub Actions runs them on every PR (the "Playwright flows" job): it starts a local Supabase, seeds it with a one-off password, builds the app and runs `npx playwright test`. On a failure, the report is kept as the `playwright-report` artifact.
+
+To run them yourself you need Docker: `npx supabase start`, point `.env.local` at the local server (see "Run Supabase locally"), `npm run seed`, `npx playwright install chromium`, `npm run build`, then `npx playwright test`. Reset the database with `npx supabase db reset` and `npm run seed` before running them again.

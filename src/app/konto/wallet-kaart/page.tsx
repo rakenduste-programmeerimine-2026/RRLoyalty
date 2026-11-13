@@ -5,6 +5,7 @@ import { Suspense } from "react";
 import { AccountShell } from "@/components/AccountShell";
 import { NotWiredButton } from "@/components/NotWiredButton";
 import { getMember } from "@/lib/auth";
+import { getNow } from "@/lib/demo-now";
 import { qrSvg } from "@/lib/qr";
 import { loadWalletCard, type WalletCard } from "@/lib/supabase-wallet-card";
 
@@ -32,7 +33,7 @@ async function Card() {
 
   let card: WalletCard | null;
   try {
-    card = await loadWalletCard();
+    card = await loadWalletCard(await getNow());
   } catch (error) {
     console.error("Could not load the wallet card", error);
     return (

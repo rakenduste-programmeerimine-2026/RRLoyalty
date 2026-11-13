@@ -4,6 +4,7 @@ import { connection } from "next/server";
 import { Suspense } from "react";
 import { AccountShell } from "@/components/AccountShell";
 import { getMember } from "@/lib/auth";
+import { getNow } from "@/lib/demo-now";
 import { euros, giftCardsView, type GiftCardView } from "@/lib/gift-cards";
 import type { Shop } from "@/lib/namesakes";
 import { formatDate } from "@/lib/rail-account";
@@ -34,13 +35,13 @@ async function GiftCards() {
   await connection();
   const member = await getMember(PATH);
 
-  const now = new Date();
+  const now = await getNow();
   let data: Awaited<ReturnType<typeof loadGiftCards>>;
   let shop: Shop;
   try {
     // Prizes left unchosen for 3 days become gift cards before they are read.
     await settleUnclaimedPrizesInSupabase(member.id, now);
-    [data, shop] = await Promise.all([loadGiftCards(), loadShopFromSupabase(member.id)]);
+    [data, shop] = await Promise.all([loadGiftCards(now), loadShopFromSupabase(member.id, now)]);
   } catch (error) {
     console.error("Could not load the gift cards page", error);
     return (

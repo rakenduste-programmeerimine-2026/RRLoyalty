@@ -1,6 +1,7 @@
 "use server";
 
 import { getMember } from "@/lib/auth";
+import { getNow } from "@/lib/demo-now";
 import { EmptyCartError, checkoutCart } from "@/lib/checkout";
 import { PurchaseConflictError } from "@/lib/purchases";
 import { SupabasePurchaseStore } from "@/lib/supabase-purchase-store";
@@ -18,12 +19,14 @@ export async function payForCart(lines: unknown, checkoutRef: string): Promise<C
 
   try {
     // Priced again here, at payment time: the offer can end between opening the bag and paying.
-    const shop = await loadShopFromSupabase(member.id);
+    const now = await getNow();
+    const shop = await loadShopFromSupabase(member.id, now);
     const result = await checkoutCart(new SupabasePurchaseStore(createAdminClient()), {
       memberId: member.id,
       lines,
       checkoutRef,
       catalog: shop.books,
+      at: now,
     });
     return {
       ok: true,

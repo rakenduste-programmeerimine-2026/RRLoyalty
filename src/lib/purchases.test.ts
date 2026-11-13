@@ -114,6 +114,98 @@ describe("recordPurchase", () => {
   });
 });
 
+describe("recordPurchase after the points expire", () => {
+  // Points expire 6 months after the last purchase (docs/program-rules.md).
+  const lastPurchase = new Date("2026-05-13T10:00:00Z");
+  const expiresAt = new Date("2026-11-13T10:00:00Z");
+
+  const buyAt = (purchasedAt: Date, amountPaid: number, externalRef: string) =>
+    recordPurchase(store, { memberId, channel: "store", amountPaid, externalRef, purchasedAt });
+
+  beforeEach(async () => {
+    // 34 seeded + 18 = 52 on lap 1, last purchase on 13 May.
+    await buyAt(lastPurchase, 18, "till-may");
+  });
+
+  it("starts the lap from 0 when the purchase comes 6 months after the last one", async () => {
+    const result = await buyAt(expiresAt, 60, "till-nov");
+
+    expect(result.points).toBe(60);
+    expect(result.openedStops).toEqual([50]);
+    expect(store.pointsOf(memberId) % 400).toBe(60);
+  });
+
+  it("writes one expiry row of minus the lap points, dated when they expired", async () => {
+    await buyAt(new Date("2027-02-01T09:00:00Z"), 10, "till-feb");
+
+    expect(store.ledger.filter((row) => row.kind === "expiry")).toEqual([
+      expect.objectContaining({ memberId, points: -52, at: expiresAt }),
+    ]);
+  });
+
+  it("keeps the points a moment before the 6 months are up", async () => {
+    const result = await buyAt(new Date(expiresAt.getTime() - 1), 60, "till-nov");
+
+    expect(result.openedStops).toEqual([100]);
+    expect(store.pointsOf(memberId)).toBe(112);
+    expect(store.ledger.some((row) => row.kind === "expiry")).toBe(false);
+  });
+
+  it("expires once when the purchase is sent again", async () => {
+    await buyAt(expiresAt, 60, "till-nov");
+    const retry = await buyAt(expiresAt, 60, "till-nov");
+
+    expect(retry.alreadyRecorded).toBe(true);
+    expect(store.ledger.filter((row) => row.kind === "expiry")).toHaveLength(1);
+    expect(store.pointsOf(memberId)).toBe(60);
+  });
+
+  it("expires once when a retry follows a failed points write", async () => {
+    store.failNextPointsWrite = true;
+    await expect(buyAt(expiresAt, 60, "till-nov")).rejects.toThrow();
+
+    await buyAt(expiresAt, 60, "till-nov");
+
+    expect(store.ledger.filter((row) => row.kind === "expiry")).toHaveLength(1);
+    expect(store.pointsOf(memberId)).toBe(60);
+  });
+
+  it("counts from the latest earlier purchase, not one recorded later with an older date", async () => {
+    await buyAt(new Date("2026-08-01T10:00:00Z"), 10, "till-aug");
+    await buyAt(new Date("2026-07-01T10:00:00Z"), 10, "till-jul-late");
+
+    const result = await buyAt(new Date("2027-01-15T10:00:00Z"), 5, "till-jan");
+
+    expect(result.points).toBe(5);
+    expect(store.pointsOf(memberId)).toBe(72 + 5);
+    expect(store.ledger.some((row) => row.kind === "expiry")).toBe(false);
+  });
+
+  it("opens the stops of the lap again after expiry, but not the one-time 150 stop", async () => {
+    await buyAt(new Date("2026-06-01T10:00:00Z"), 100, "till-jun"); // 152: opens 100 and 150
+    await buyAt(new Date("2026-12-01T10:00:00Z"), 160, "till-dec"); // expired, 0 + 160
+
+    expect(store.perks.map((perk) => [perk.stopAt, perk.lap, perk.restart])).toEqual([
+      [50, 1, 0],
+      [100, 1, 0],
+      [150, 1, 0],
+      [50, 1, 1],
+      [100, 1, 1],
+    ]);
+  });
+
+  it("writes no expiry row when the lap has no points, and keeps completed laps", async () => {
+    const lapTwo = new MemoryPurchaseStore();
+    lapTwo.seedPoints(memberId, 400);
+    await recordPurchase(lapTwo, { memberId, channel: "app", amountPaid: 0, externalRef: "app-0", purchasedAt: lastPurchase });
+
+    await recordPurchase(lapTwo, { memberId, channel: "app", amountPaid: 20, externalRef: "app-1", purchasedAt: expiresAt });
+
+    expect(lapTwo.ledger.some((row) => row.kind === "expiry")).toBe(false);
+    expect(lapTwo.pointsOf(memberId)).toBe(420);
+  });
+});
+
 describe("initialStatus", () => {
   it("hands store purchases over at the till and processes the rest as orders", () => {
     expect(CHANNELS.map((channel) => [channel, initialStatus(channel)])).toEqual([

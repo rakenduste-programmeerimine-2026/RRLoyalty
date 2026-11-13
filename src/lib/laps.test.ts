@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { applyPurchase, expirePoints, pointsExpireAt, type MemberPoints } from "./laps";
+import { addMonths, applyPurchase, expirePoints, lapPointsAt, pointsExpireAt, type MemberPoints } from "./laps";
 import type { PerkToOpen } from "./points";
 
 const lastPurchase = new Date("2026-05-10T12:00:00Z");
@@ -140,5 +140,28 @@ describe("applyPurchase", () => {
 
     expect(result.expiredPoints).toBe(160);
     expect(result.perks.map((perk) => perk.stopAt)).toEqual([50, 100]);
+  });
+});
+
+describe("addMonths", () => {
+  it("keeps the time and moves to the last day of a shorter month", () => {
+    expect(addMonths(new Date("2026-11-13T10:30:00Z"), 6)).toEqual(new Date("2027-05-13T10:30:00Z"));
+    expect(addMonths(new Date("2026-08-31T09:00:00Z"), 6)).toEqual(new Date("2027-02-28T09:00:00Z"));
+  });
+});
+
+describe("lapPointsAt", () => {
+  const expiresAt = new Date("2026-11-10T12:00:00Z");
+
+  it("shows the lap points until they expire", () => {
+    expect(lapPointsAt(120, lastPurchase, new Date(expiresAt.getTime() - 1))).toBe(120);
+  });
+
+  it("shows 0 once the 6 months are up, before an expiry row is written", () => {
+    expect(lapPointsAt(120, lastPurchase, expiresAt)).toBe(0);
+  });
+
+  it("shows the points of a member without a purchase", () => {
+    expect(lapPointsAt(34, null, new Date("2030-01-01T00:00:00Z"))).toBe(34);
   });
 });

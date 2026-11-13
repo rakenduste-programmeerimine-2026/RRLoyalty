@@ -42,12 +42,34 @@ export type PurchaseResult = Expiry & {
  * `interval '6 months'` does in the member_points view.
  */
 export function pointsExpireAt(lastPurchaseAt: Date): Date {
-  const year = lastPurchaseAt.getUTCFullYear();
-  const month = lastPurchaseAt.getUTCMonth() + EXPIRY_MONTHS;
+  return addMonths(lastPurchaseAt, EXPIRY_MONTHS);
+}
+
+/** `months` calendar months later, at the same time, on the last day of the month when it is shorter. */
+export function addMonths(date: Date, months: number): Date {
+  const year = date.getUTCFullYear();
+  const month = date.getUTCMonth() + months;
   const lastDayOfMonth = new Date(Date.UTC(year, month + 1, 0)).getUTCDate();
-  const expires = new Date(lastPurchaseAt);
-  expires.setUTCFullYear(year, month, Math.min(lastPurchaseAt.getUTCDate(), lastDayOfMonth));
-  return expires;
+  const moved = new Date(date);
+  moved.setUTCFullYear(year, month, Math.min(date.getUTCDate(), lastDayOfMonth));
+  return moved;
+}
+
+/**
+ * The current lap's points as the member sees them at `now`: 0 once they
+ * have expired, even before the next purchase writes the expiry row.
+ */
+export function lapPointsAt(lapPoints: number, lastPurchaseAt: Date | null, now: Date): number {
+  return lastPurchaseAt !== null && now >= pointsExpireAt(lastPurchaseAt) ? 0 : lapPoints;
+}
+
+/** lapPointsAt for a member_points row as Supabase returns it, or 0 when there is none. */
+export function lapPointsOf(
+  row: { current_lap_points: number | string; last_purchase_at: string | null } | null,
+  now: Date,
+): number {
+  if (!row) return 0;
+  return lapPointsAt(Number(row.current_lap_points), row.last_purchase_at ? new Date(row.last_purchase_at) : null, now);
 }
 
 /** Sets the current lap to 0 once its points have expired. Perks, laps and the lifetime total stay. */

@@ -15,6 +15,19 @@ export type LapPosition = {
   lap: number;
   /** current_lap_points from the member_points view. */
   lapPoints: number;
+  /**
+   * The member's latest purchase at or before the one being recorded, that one
+   * left out. Points expire 6 months after it. Null when there is none.
+   */
+  lastPurchaseAt: Date | null;
+};
+
+/** The current lap's points expired before this purchase (docs/program-rules.md). */
+export type ExpiryWrite = {
+  /** Minus the lap points: the expiry row's points. */
+  points: number;
+  /** When they expired: 6 months after the previous purchase. */
+  at: Date;
 };
 
 export type NewPurchase = {
@@ -49,11 +62,18 @@ export type PointsWrite = {
 export interface PurchaseStore {
   /** Saves the purchase, or returns the one already saved with the same externalRef. */
   findOrCreatePurchase(purchase: NewPurchase): Promise<{ purchase: SavedPurchase; created: boolean }>;
-  lapPosition(memberId: string): Promise<LapPosition>;
+  /** Where the member stands before `purchase`, which is already saved. */
+  lapPosition(memberId: string, purchase: { id: number; purchasedAt: Date }): Promise<LapPosition>;
   /**
-   * Writes one earn row to points_ledger and a perks row (source 'rail') per
-   * opened perk, all or nothing. Idempotent per purchase: points_ledger.purchase_id
-   * is unique, so a second call writes nothing and returns applied: false.
+   * Writes the expiry row first when there is one, then one earn row to
+   * points_ledger and a perks row (source 'rail') per opened perk, all or
+   * nothing. Idempotent per purchase: points_ledger.purchase_id is unique, so a
+   * second call writes nothing, not even the expiry, and returns applied: false.
    */
-  recordPurchasePoints(memberId: string, purchaseId: number, outcome: PurchaseOutcome): Promise<PointsWrite>;
+  recordPurchasePoints(
+    memberId: string,
+    purchaseId: number,
+    outcome: PurchaseOutcome,
+    expiry: ExpiryWrite | null,
+  ): Promise<PointsWrite>;
 }

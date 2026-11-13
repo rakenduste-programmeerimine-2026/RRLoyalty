@@ -5,7 +5,15 @@ import type { SupabaseClient } from "@supabase/supabase-js";
 import { openingCode } from "./perks";
 import type { PurchaseOutcome } from "./points";
 import { recordPurchase, type PurchaseRequest, type RecordedPurchase } from "./purchases";
-import type { Channel, LapPosition, NewPurchase, PointsWrite, PurchaseStore, SavedPurchase } from "./purchase-store";
+import type {
+  Channel,
+  ExpiryWrite,
+  LapPosition,
+  NewPurchase,
+  PointsWrite,
+  PurchaseStore,
+  SavedPurchase,
+} from "./purchase-store";
 import { createAdminClient } from "./supabase/admin";
 
 const UNIQUE_VIOLATION = "23505";
@@ -60,21 +68,44 @@ export class SupabasePurchaseStore implements PurchaseStore {
     return { purchase: toSaved(existing.data), created: false };
   }
 
-  async lapPosition(memberId: string): Promise<LapPosition> {
-    const { data, error } = await this.db
-      .from("member_points")
-      .select("laps_completed, current_lap_points")
-      .eq("member_id", memberId)
-      .single<{ laps_completed: number; current_lap_points: number }>();
-    if (error) throw new Error(`Could not read the member's points: ${error.message}`);
-    return { lap: Number(data.laps_completed) + 1, lapPoints: Number(data.current_lap_points) };
+  async lapPosition(memberId: string, purchase: { id: number; purchasedAt: Date }): Promise<LapPosition> {
+    const [points, previous] = await Promise.all([
+      this.db
+        .from("member_points")
+        .select("laps_completed, current_lap_points")
+        .eq("member_id", memberId)
+        .single<{ laps_completed: number; current_lap_points: number }>(),
+      this.db
+        .from("purchases")
+        .select("purchased_at")
+        .eq("member_id", memberId)
+        .neq("id", purchase.id)
+        .lte("purchased_at", purchase.purchasedAt.toISOString())
+        .order("purchased_at", { ascending: false })
+        .limit(1)
+        .maybeSingle<{ purchased_at: string }>(),
+    ]);
+    if (points.error) throw new Error(`Could not read the member's points: ${points.error.message}`);
+    if (previous.error) throw new Error(`Could not read the last purchase: ${previous.error.message}`);
+    return {
+      lap: Number(points.data.laps_completed) + 1,
+      lapPoints: Number(points.data.current_lap_points),
+      lastPurchaseAt: previous.data ? new Date(previous.data.purchased_at) : null,
+    };
   }
 
-  async recordPurchasePoints(memberId: string, purchaseId: number, outcome: PurchaseOutcome): Promise<PointsWrite> {
+  async recordPurchasePoints(
+    memberId: string,
+    purchaseId: number,
+    outcome: PurchaseOutcome,
+    expiry: ExpiryWrite | null,
+  ): Promise<PointsWrite> {
     const { data, error } = await this.db.rpc("record_purchase_points", {
       p_member_id: memberId,
       p_purchase_id: purchaseId,
       p_points: outcome.points,
+      p_expiry_points: expiry?.points ?? null,
+      p_expired_at: expiry?.at.toISOString() ?? null,
       p_perks: outcome.perks.map((perk) => ({
         stop_at: perk.stopAt,
         lap: perk.lap,

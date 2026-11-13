@@ -3,6 +3,7 @@
 
 import "server-only";
 import type { BirthdayCardRow, GiftCardRow } from "./gift-cards";
+import { lapPointsOf } from "./laps";
 import { createClient } from "./supabase/server";
 
 type GiftCardDbRow = {
@@ -28,7 +29,9 @@ const toGiftCard = (row: GiftCardDbRow): GiftCardRow => ({
   redeemedAt: row.perks?.redeemed_at ? new Date(row.perks.redeemed_at) : null,
 });
 
-export async function loadGiftCards(): Promise<{ cards: GiftCardRow[]; birthdays: BirthdayCardRow[]; lapPoints: number }> {
+export async function loadGiftCards(
+  now: Date = new Date(),
+): Promise<{ cards: GiftCardRow[]; birthdays: BirthdayCardRow[]; lapPoints: number }> {
   const supabase = await createClient();
   const [cards, birthdays, points] = await Promise.all([
     supabase.from("gift_cards").select(GIFT_CARD_COLUMNS).returns<GiftCardDbRow[]>(),
@@ -37,7 +40,10 @@ export async function loadGiftCards(): Promise<{ cards: GiftCardRow[]; birthdays
       .select("id, code, expires_at, redeemed_at")
       .eq("source", "birthday")
       .returns<{ id: number; code: string | null; expires_at: string; redeemed_at: string | null }[]>(),
-    supabase.from("member_points").select("current_lap_points").maybeSingle<{ current_lap_points: number }>(),
+    supabase
+      .from("member_points")
+      .select("current_lap_points, last_purchase_at")
+      .maybeSingle<{ current_lap_points: number; last_purchase_at: string | null }>(),
   ]);
   if (cards.error) throw new Error(`Could not read gift cards: ${cards.error.message}`);
   if (birthdays.error) throw new Error(`Could not read birthday cards: ${birthdays.error.message}`);
@@ -51,7 +57,7 @@ export async function loadGiftCards(): Promise<{ cards: GiftCardRow[]; birthdays
       expiresAt: new Date(row.expires_at),
       redeemedAt: row.redeemed_at ? new Date(row.redeemed_at) : null,
     })),
-    lapPoints: Number(points.data?.current_lap_points ?? 0),
+    lapPoints: lapPointsOf(points.data, now),
   };
 }
 

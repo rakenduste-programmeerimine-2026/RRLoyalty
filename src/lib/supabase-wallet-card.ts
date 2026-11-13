@@ -2,6 +2,7 @@
 // session: RLS (#6) returns only their members row and member_points.
 
 import "server-only";
+import { lapPointsOf } from "./laps";
 import { createClient } from "./supabase/server";
 
 export type WalletCard = {
@@ -12,14 +13,17 @@ export type WalletCard = {
 };
 
 /** The card, or null when the signed-in user has no members row. */
-export async function loadWalletCard(): Promise<WalletCard | null> {
+export async function loadWalletCard(now: Date = new Date()): Promise<WalletCard | null> {
   const supabase = await createClient();
   const [member, points] = await Promise.all([
     supabase
       .from("members")
       .select("first_name, last_name, card_number")
       .maybeSingle<{ first_name: string; last_name: string | null; card_number: string | null }>(),
-    supabase.from("member_points").select("current_lap_points").maybeSingle<{ current_lap_points: number }>(),
+    supabase
+      .from("member_points")
+      .select("current_lap_points, last_purchase_at")
+      .maybeSingle<{ current_lap_points: number; last_purchase_at: string | null }>(),
   ]);
   if (member.error) throw new Error(`Could not read the member: ${member.error.message}`);
   if (points.error) throw new Error(`Could not read points: ${points.error.message}`);
@@ -28,6 +32,6 @@ export async function loadWalletCard(): Promise<WalletCard | null> {
   return {
     name: [member.data.first_name, member.data.last_name].filter(Boolean).join(" "),
     cardNumber: member.data.card_number,
-    lapPoints: Number(points.data?.current_lap_points ?? 0),
+    lapPoints: lapPointsOf(points.data, now),
   };
 }

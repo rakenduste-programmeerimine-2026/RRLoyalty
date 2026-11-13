@@ -549,3 +549,13 @@ a.gift-card:hover { border-color: var(--teal); }
 .profile-form { display: grid; gap: 16px; }
 .profile-form .field small { font-weight: 400; }
 .profile-form input[readonly] { background: var(--paper); color: var(--ink-soft); }
+
+/* /demo (hidden, for presenting) */
+.field select { width: 100%; padding: 12px 14px; border: 1.5px solid var(--line); border-radius: var(--radius-s); background: var(--white); color: var(--ink); font: 400 16px/1.3 var(--sans); }
+.demo-state { display: grid; gap: 12px; }
+.demo-state h2 { font-size: 20px; }
+.demo-perks { display: grid; gap: 8px; padding: 0; list-style: none; }
+.demo-perks li { display: grid; gap: 2px; padding: 10px 14px; border-radius: var(--radius-m); background: var(--paper); }
+.demo-links { display: flex; flex-wrap: wrap; gap: 8px 20px; }
+.demo-controls { display: grid; gap: 16px; }
+.demo-controls .note, .demo-controls .form-error { margin-top: 12px; }

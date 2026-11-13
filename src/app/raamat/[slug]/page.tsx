@@ -6,6 +6,7 @@ import { BookCover } from "@/components/BookCover";
 import { Screen } from "@/components/Screen";
 import { ShopError, ShopLoading } from "@/components/ShopError";
 import { getMember } from "@/lib/auth";
+import { getNow } from "@/lib/demo-now";
 import { formatEur } from "@/lib/money";
 import type { Shop } from "@/lib/namesakes";
 import { pointsForPurchase } from "@/lib/points";
@@ -34,7 +35,7 @@ async function BookDetails({ params }: { params: Params }) {
 
   let shop: Shop;
   try {
-    shop = await loadShopFromSupabase(member.id);
+    shop = await loadShopFromSupabase(member.id, await getNow());
   } catch (error) {
     console.error("Could not load the book", error);
     return <ShopError title={TITLE} backTo={BACK} retry={`/raamat/${encodeURIComponent(slug)}`} />;

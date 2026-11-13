@@ -5,6 +5,7 @@ import "server-only";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type { Channel } from "./purchase-store";
 import { railView, type HistoryRow, type PerkRow, type PointsRow, type RailStore, type RailView } from "./rail-account";
+import { settleUnclaimedPrizesInSupabase } from "./supabase-perk-store";
 import { createAdminClient } from "./supabase/admin";
 
 const date = (value: string | null) => (value ? new Date(value) : null);
@@ -95,6 +96,8 @@ export class SupabaseRailStore implements RailStore {
 /** The Gustavi rada page's data for the signed-in member. Server only: check memberId with getMember() first. */
 export async function loadRailFromSupabase(memberId: string, historyLimit: number, now = new Date()): Promise<RailView> {
   const store = new SupabaseRailStore(createAdminClient());
+  // Prizes left unchosen for 3 days become gift cards before the page reads them.
+  await settleUnclaimedPrizesInSupabase(memberId, now);
   const [points, perks, history] = await Promise.all([
     store.points(memberId),
     store.perks(memberId),

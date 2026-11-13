@@ -8,6 +8,7 @@ import { euros, giftCardsView, type GiftCardView } from "@/lib/gift-cards";
 import type { Shop } from "@/lib/namesakes";
 import { formatDate } from "@/lib/rail-account";
 import { loadGiftCards } from "@/lib/supabase-gift-cards";
+import { settleUnclaimedPrizesInSupabase } from "@/lib/supabase-perk-store";
 import { loadShopFromSupabase } from "@/lib/supabase-shop-store";
 
 export const metadata: Metadata = { title: "Kinkekaardid ja soodustused · Minu konto" };
@@ -33,9 +34,12 @@ async function GiftCards() {
   await connection();
   const member = await getMember(PATH);
 
+  const now = new Date();
   let data: Awaited<ReturnType<typeof loadGiftCards>>;
   let shop: Shop;
   try {
+    // Prizes left unchosen for 3 days become gift cards before they are read.
+    await settleUnclaimedPrizesInSupabase(member.id, now);
     [data, shop] = await Promise.all([loadGiftCards(), loadShopFromSupabase(member.id)]);
   } catch (error) {
     console.error("Could not load the gift cards page", error);
@@ -50,7 +54,7 @@ async function GiftCards() {
     );
   }
 
-  const view = giftCardsView(data.cards, data.birthdays, new Date());
+  const view = giftCardsView(data.cards, data.birthdays, now);
   // The coupon is a discount, not a card, so the "no cards yet" note shows next to it too.
   const nothing = view.active.length === 0 && view.birthday.length === 0 && view.past.length === 0;
 

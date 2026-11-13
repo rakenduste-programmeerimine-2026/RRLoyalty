@@ -9,13 +9,11 @@
 // can trigger a birthday without touching the system clock.
 
 import { DAY_MS, parseDay } from "./calendar-day";
+import { randomCodePart } from "./codes";
 import { PERK_DAYS } from "./points";
 
 export const BIRTHDAY_CODE_PREFIX = "SYNNIPAEV-";
 
-// No 0/O or 1/I, so the code can be read aloud or typed without mistakes.
-// 32 characters, so one random byte picks one evenly.
-const CODE_ALPHABET = "23456789ABCDEFGHJKLMNPQRSTUVWXYZ";
 const CODE_LENGTH = 4;
 
 export type BirthdayCard = {
@@ -45,9 +43,8 @@ export function isBirthday(birthday: string, today: string): boolean {
 }
 
 /** A code like SYNNIPAEV-7K2M. Pass bytes in tests; otherwise they are random. */
-export function birthdayCode(bytes: Uint8Array = crypto.getRandomValues(new Uint8Array(CODE_LENGTH))): string {
-  const chars = Array.from(bytes.slice(0, CODE_LENGTH), (byte) => CODE_ALPHABET[byte % CODE_ALPHABET.length]);
-  return BIRTHDAY_CODE_PREFIX + chars.join("");
+export function birthdayCode(bytes?: Uint8Array): string {
+  return BIRTHDAY_CODE_PREFIX + randomCodePart(CODE_LENGTH, bytes);
 }
 
 /** The card to give on `today`, or null when `today` is not the member's birthday. */

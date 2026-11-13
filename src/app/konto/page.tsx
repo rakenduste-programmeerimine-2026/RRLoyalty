@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { connection } from "next/server";
 import { Suspense } from "react";
 import { AccountShell } from "@/components/AccountShell";
 import { getMember } from "@/lib/auth";
@@ -8,6 +9,8 @@ export const metadata: Metadata = { title: "Minu konto · Gustavi rada" };
 
 // Reads the session, so it streams in behind the Suspense boundary below.
 async function SignedInMember() {
+  // Render per request: the session check reads the clock, which Next.js won't allow while prerendering.
+  await connection();
   const member = await getMember("/konto");
 
   return (

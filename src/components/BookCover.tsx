@@ -1,4 +1,4 @@
-import type { Book } from "@/lib/sample-data";
+import type { Book } from "@/lib/book";
 
 export function BookCover({ book, size }: { book: Book; size: "grid" | "large" }) {
   return (

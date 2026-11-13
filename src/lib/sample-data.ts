@@ -1,4 +1,5 @@
 // Stand-in content for the design stage. Replace with Supabase data.
+// Nothing imports this file right now; kept in case the design stage needs it.
 
 export const member = {
   name: "Mari",
@@ -9,20 +10,3 @@ export const member = {
 
 /** The prize-choice stop the demo member has reached (100, 200, 300 or 400). */
 export const reachedPrizeStop = 100;
-
-export type Book = {
-  slug: string;
-  title: string;
-  author: string;
-  price: number;
-  cover: "aqua" | "crimson" | "aubergine" | "teal";
-};
-
-export const nameDayBooks: Book[] = [
-  { slug: "sugisene-raamatupood", title: "Sügisene raamatupood", author: "Mari Näidis", price: 20, cover: "aubergine" },
-  { slug: "lounatuul", title: "Lõunatuul", author: "Mari Näidis", price: 17.9, cover: "aqua" },
-  { slug: "kolm-kassi", title: "Kolm kassi katusel", author: "Mari Proov", price: 14.5, cover: "crimson" },
-  { slug: "vaikne-tanav", title: "Vaikne tänav", author: "Mari Proov", price: 22, cover: "teal" },
-];
-
-export const siteLinks = ["Raamatud", "E-raamatud", "Äpp", "Literaat", "Kauplused"];

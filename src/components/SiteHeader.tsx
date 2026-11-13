@@ -1,8 +1,9 @@
 import Link from "next/link";
 import { Suspense } from "react";
-import { siteLinks } from "@/lib/sample-data";
 import { CartCount } from "./CartCount";
 import { HeaderMember } from "./HeaderMember";
+
+const siteLinks = ["Raamatud", "E-raamatud", "Äpp", "Literaat", "Kauplused"];
 
 export function SiteHeader() {
   return (

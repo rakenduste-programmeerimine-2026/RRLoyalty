@@ -3,7 +3,7 @@
 // Rules: docs/program-rules.md (Name day and birthday).
 
 import { isNamesake, nameDayOffer, namesakePrice, type NameDay, type NameDayOffer } from "./name-day";
-import type { Book } from "./sample-data";
+import type { Book } from "./book";
 
 /** A row of books joined with its author. */
 export type CatalogBook = Book & { authorFirstName: string; format: "book" | "ebook" };

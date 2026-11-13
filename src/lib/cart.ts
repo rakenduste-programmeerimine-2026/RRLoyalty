@@ -1,4 +1,4 @@
-import type { Book } from "./sample-data";
+import type { Book } from "./book";
 
 export type CartLine = { slug: string; qty: number };
 

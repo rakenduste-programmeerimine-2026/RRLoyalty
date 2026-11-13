@@ -37,7 +37,7 @@ export class SupabaseRailStore implements RailStore {
   async perks(memberId: string): Promise<PerkRow[]> {
     const { data, error } = await this.db
       .from("perks")
-      .select("id, source, stop_at, opened_at, expires_at, choose_by, choice, code, redeemed_at")
+      .select("id, source, stop_at, opened_at, expires_at, choose_by, choice, code, redeemed_at, gift_cards(valid_until)")
       .eq("member_id", memberId)
       .is("redeemed_at", null)
       .returns<
@@ -51,6 +51,8 @@ export class SupabaseRailStore implements RailStore {
           choice: string | null;
           code: string | null;
           redeemed_at: string | null;
+          // One-to-one through gift_cards.perk_id; PostgREST may still send a list.
+          gift_cards: { valid_until: string } | { valid_until: string }[] | null;
         }[]
       >();
     if (error) throw new Error(`Could not read the member's perks: ${error.message}`);
@@ -64,6 +66,7 @@ export class SupabaseRailStore implements RailStore {
       choice: row.choice,
       code: row.code,
       redeemedAt: date(row.redeemed_at),
+      giftCardValidUntil: date((Array.isArray(row.gift_cards) ? row.gift_cards[0] : row.gift_cards)?.valid_until ?? null),
     }));
   }
 

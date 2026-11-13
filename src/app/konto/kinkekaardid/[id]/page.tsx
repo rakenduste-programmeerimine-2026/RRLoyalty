@@ -54,9 +54,12 @@ async function GiftCardDetails({ params }: { params: Params }) {
       }
     >
       <GiftCardPerk
+        perkId={card.perkId}
         code={card.code}
         validUntil={formatDate(card.validUntil)}
         qrSvg={await qrSvg(card.code)}
+        used={card.redeemedAt !== null}
+        expired={card.redeemedAt === null && card.validUntil <= new Date()}
       />
     </Screen>
   );

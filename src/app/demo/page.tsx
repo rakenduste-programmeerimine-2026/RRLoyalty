@@ -97,6 +97,7 @@ async function DemoContent() {
           <Link href="/konto/gustavi-rada">Gustavi rada ›</Link>
           <Link href="/konto/kinkekaardid">Kinkekaardid ›</Link>
           <Link href="/nimekaimud">Nimekaimud ›</Link>
+          <Link href="/postkast">Postkast ›</Link>
         </p>
       </section>
 

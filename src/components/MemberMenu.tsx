@@ -36,6 +36,7 @@ export function MemberMenu({ name }: { name: string }) {
         <ul className="member-menu__list">
           <li><Link href="/konto" onClick={() => setOpen(false)}>Minu konto</Link></li>
           <li><Link href="/konto/gustavi-rada" onClick={() => setOpen(false)}>Gustavi rada</Link></li>
+          <li><Link href="/postkast" onClick={() => setOpen(false)}>Postkast</Link></li>
           <li>
             <button
               type="button"

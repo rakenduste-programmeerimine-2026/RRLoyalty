@@ -1,0 +1,38 @@
+/* A dialog in the middle of a wide screen, and a sheet from the bottom on a phone. */
+.sheet {
+  width: min(400px, calc(100vw - 48px));
+  padding: 20px 24px 24px;
+  border: 0;
+  border-radius: var(--radius-l);
+  background: var(--white);
+  color: var(--ink);
+  text-align: center;
+}
+.sheet[open] { display: flex; flex-direction: column; align-items: center; gap: 12px; }
+.sheet::backdrop { background: rgb(35 30 51 / 45%); }
+.sheet__head { display: flex; align-items: center; align-self: stretch; justify-content: space-between; text-align: left; }
+.sheet__head h2 { font: 700 18px/1.3 var(--sans); letter-spacing: 0; }
+.sheet__close {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--ink);
+  cursor: pointer;
+}
+.sheet .textlink { min-height: 44px; }
+.sheet .btn { min-height: 48px; }
+
+@media (max-width: 760px) {
+  .sheet {
+    width: 100%;
+    max-width: none;
+    margin: auto 0 0;
+    padding: 12px 20px 24px;
+    border-radius: 16px 16px 0 0;
+  }
+}

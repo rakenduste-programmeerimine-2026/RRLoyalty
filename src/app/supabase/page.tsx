@@ -1,6 +1,7 @@
 // Developer check: does the app reach Supabase with the values in .env.local?
 // Not linked from the menus. Can be removed once real data is connected (#16).
 
+import "../index.css";
 import { connection } from "next/server";
 import { Suspense } from "react";
 import { createClient } from "@/lib/supabase/server";

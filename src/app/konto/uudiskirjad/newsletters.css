@@ -1,0 +1,27 @@
+/* Uudiskirjad */
+.newsletters { display: flex; flex-direction: column; gap: 20px; max-width: 640px; }
+.newsletters fieldset {
+  margin: 0;
+  padding: 0;
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius-s);
+  background: var(--white);
+}
+.newsletters__save { max-width: 260px; }
+.toggle-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--line);
+  cursor: pointer;
+}
+.toggle-row:last-child { border-bottom: 0; }
+.toggle-row input { flex: none; width: 20px; height: 20px; margin: 1px 0 0; accent-color: var(--teal); cursor: pointer; }
+.toggle-row span { display: flex; flex-direction: column; gap: 2px; }
+.toggle-row b { font-size: 15px; font-weight: 600; }
+.toggle-row small { font-size: 13px; }
+
+@media (max-width: 760px) {
+  .newsletters__save { max-width: none; }
+}

@@ -1,0 +1,14 @@
+.account-menu { display: flex; flex-direction: column; gap: 2px; }
+.account-menu a {
+  display: flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 0 12px;
+  border: 1.5px solid transparent;
+  border-radius: var(--radius-s);
+  color: var(--ink);
+  font-size: 14px;
+  text-decoration: none;
+}
+.account-menu a:hover { background: var(--cream); }
+.account-menu a[aria-current] { border-color: var(--teal); background: var(--sky); font-weight: 600; }

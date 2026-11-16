@@ -1,3 +1,4 @@
+import "./demo.css";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { connection } from "next/server";
@@ -18,7 +19,7 @@ const PATH = "/demo";
 
 export default function DemoPage() {
   return (
-    <Screen title="Demo juhtimine">
+    <Screen title="Demo juhtimine" variant="card">
       <h1>Demo juhtimine</h1>
       <p className="muted">
         Lisa oste, käivita nimepäev või sünnipäev ja keri aega edasi. Kõik käib sama loogika kaudu nagu päris
@@ -45,10 +46,10 @@ async function DemoContent() {
   } catch (error) {
     console.error("Could not load the demo page", error);
     return (
-      <section className="perk" role="alert">
+      <section className="panel" role="alert">
         <h2>Midagi läks valesti</h2>
         <p>Demo andmeid ei õnnestunud laadida. Proovi hetke pärast uuesti.</p>
-        <div className="perk__actions">
+        <div className="panel__actions">
           <Link className="btn btn--auto" href={PATH}>Proovi uuesti</Link>
         </div>
       </section>
@@ -58,7 +59,7 @@ async function DemoContent() {
   return (
     <>
       <section className="demo-state" aria-label="Praegune seis">
-        <dl className="profile__facts">
+        <dl className="facts">
           <div>
             <dt>Demo kuupäev</dt>
             <dd>{formatDate(now)}{demoDate ? "" : " (täna)"}</dd>

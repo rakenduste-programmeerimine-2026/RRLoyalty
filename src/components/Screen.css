@@ -1,0 +1,104 @@
+/* Wide screens: the site header, a "Tagasi" link and the content. */
+.screen__bar { display: none; }
+.screen__page {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  max-width: var(--page-width);
+  margin: 0 auto;
+  padding: 24px 24px 56px;
+}
+.screen__back {
+  display: flex;
+  align-items: center;
+  align-self: flex-start;
+  gap: 4px;
+  min-height: 44px;
+  color: var(--ink);
+  font-size: 14px;
+  font-weight: 500;
+  text-decoration: none;
+}
+.screen__back:hover { color: var(--teal); }
+.screen__body { display: flex; flex-direction: column; gap: 16px; min-width: 0; }
+.screen h1 { font-size: 28px; }
+.screen__foot { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; }
+.screen__foot .btn { flex: 1 1 200px; width: auto; }
+.screen__foot .form-error { flex: 1 1 100%; }
+
+.screen--plain .screen__body { gap: 20px; }
+.screen--plain .screen__foot .btn { flex: 0 1 320px; }
+
+/* One centred box. */
+.screen--card .screen__body,
+.screen--mail .screen__body {
+  align-self: center;
+  width: 100%;
+  max-width: 560px;
+  padding: 32px;
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius-m);
+  background: var(--white);
+}
+.screen--center .screen__body { text-align: center; }
+.screen--center .screen__body > * { align-self: center; }
+.screen--center .screen__body > .scene,
+.screen--center .screen__body > .screen__foot { align-self: stretch; }
+
+/* A message, on a tinted page. */
+.screen--mail { min-height: 100dvh; background: var(--cream); }
+.screen--mail .screen__page { max-width: 768px; }
+.screen--mail .screen__back { font-weight: 600; }
+.screen--mail .screen__body { max-width: none; }
+.screen--mail .screen__foot .btn { flex: 0 1 320px; margin: 0 auto; }
+
+/* Phones: a top bar with the back arrow, the content, and the buttons pinned to the bottom. */
+@media (max-width: 760px) {
+  .screen { display: flex; flex-direction: column; min-height: 100dvh; background: var(--white); }
+  .screen > .site-top,
+  .screen__back { display: none; }
+  .screen__bar {
+    display: flex;
+    flex: none;
+    align-items: center;
+    gap: 4px;
+    height: 56px;
+    padding: 0 8px;
+    border-bottom: 1px solid var(--line);
+    background: var(--white);
+    font-size: 15px;
+    font-weight: 600;
+  }
+  .screen__bar a {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    color: var(--ink);
+  }
+  .screen__bar span:first-child { padding-left: 8px; }
+  .screen__page { flex: 1; width: 100%; padding: 0; }
+  .screen .screen__body {
+    flex: 1;
+    gap: 14px;
+    max-width: none;
+    padding: 16px 16px 0;
+    border: 0;
+    border-radius: 0;
+    background: var(--white);
+  }
+  .screen h1 { font-size: 24px; }
+  .screen .screen__foot {
+    position: sticky;
+    bottom: 0;
+    flex-direction: column;
+    align-items: stretch;
+    align-self: stretch;
+    margin-top: auto;
+    padding: 12px 0 24px;
+    background: linear-gradient(transparent, var(--white) 12px);
+  }
+  .screen .screen__foot .btn { flex: none; width: 100%; margin: 0; }
+  .screen__foot .textlink { align-self: center; }
+}

@@ -10,7 +10,7 @@ setup("sign in as the demo member", async ({ page }) => {
   const password = process.env.DEMO_PASSWORD;
   if (!email || !password) throw new Error("Set DEMO_EMAIL and DEMO_PASSWORD (the seeded demo account).");
 
-  await page.goto("/logi-sisse?next=%2Fkonto");
+  await page.goto("/logi-sisse?next=%2Fkonto%2Fgustavi-rada");
   // The page first shows a placeholder copy of the form (its Suspense fallback), then streams in
   // the real one. Wait until only one is left, so the details go into the form that is submitted.
   await expect(page.getByLabel("E-posti aadress")).toHaveCount(1);
@@ -18,6 +18,6 @@ setup("sign in as the demo member", async ({ page }) => {
   await page.getByLabel("Parool").fill(password);
   await page.getByRole("button", { name: "Logi sisse" }).click();
 
-  await expect(page).toHaveURL(/\/konto$/);
+  await expect(page).toHaveURL(/\/konto\/gustavi-rada$/);
   await page.context().storageState({ path: AUTH_FILE });
 });

@@ -1,0 +1,106 @@
+.site-top { border-bottom: 1px solid var(--line); background: var(--white); }
+.site-top__row {
+  position: relative;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 24px;
+  max-width: var(--page-width);
+  margin: 0 auto;
+  padding: 12px 24px;
+}
+.site-top__logo { display: block; flex: none; }
+.site-top__logo img { display: block; width: auto; height: 44px; }
+
+.search {
+  display: flex;
+  flex: 1 1 240px;
+  align-items: center;
+  gap: 8px;
+  max-width: 420px;
+  height: 44px;
+  padding: 0 16px;
+  border: 1px solid var(--line-strong);
+  border-radius: 22px;
+  color: var(--ink-soft);
+}
+.search:focus-within { border-color: var(--teal); }
+.search input {
+  flex: 1;
+  min-width: 0;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  color: var(--ink);
+  font-size: 14px;
+}
+
+.site-nav { display: flex; flex-wrap: wrap; gap: 4px; }
+.site-nav a {
+  display: flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 0 10px;
+  color: var(--ink);
+  font-size: 14px;
+  font-weight: 500;
+  text-decoration: none;
+}
+.site-nav a:hover { color: var(--teal); }
+
+.site-user { display: flex; align-items: center; gap: 4px; margin-left: auto; }
+.site-user__icon,
+.site-user__link {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-width: 44px;
+  min-height: 44px;
+  color: var(--ink);
+  font-size: 14px;
+  font-weight: 500;
+  text-decoration: none;
+}
+.site-user__link { padding: 0 10px; }
+.site-user__link--member,
+.site-user__link--sign-in { font-weight: 600; }
+.site-user__icon:hover,
+.site-user__link:hover { color: var(--teal); }
+.site-user__badge {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 16px;
+  height: 16px;
+  padding: 0 4px;
+  border: 1.5px solid var(--white);
+  border-radius: 8px;
+  background: var(--crimson);
+  color: var(--white);
+  font-size: 10px;
+  font-weight: 600;
+  line-height: 1;
+}
+/* On a wide screen the bag shows its count as text. */
+.site-user__link--bag .site-user__badge { display: none; }
+
+@media (max-width: 760px) {
+  .site-top__row { flex-wrap: nowrap; gap: 4px; height: 56px; padding: 0 8px; }
+  .site-top__logo { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); }
+  .site-top__logo img { height: 40px; }
+  .search,
+  .site-nav,
+  .site-user__link--member,
+  .site-user__bag-text { display: none; }
+  .site-user__link { padding: 0; }
+  .site-user__link--sign-in { padding: 0 8px; font-size: 13px; }
+  .site-user__link--bag .site-user__badge { display: flex; right: 4px; }
+}
+@media (max-width: 380px) {
+  .site-top__logo img { height: 32px; }
+}

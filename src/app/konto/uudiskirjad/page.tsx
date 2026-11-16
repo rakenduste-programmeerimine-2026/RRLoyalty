@@ -14,7 +14,8 @@ export default function NewslettersPage() {
     <AccountShell current="Uudiskirjad">
       <div>
         <h1>Uudiskirjad</h1>
-        <p className="lede">Prototüübis e-kirju ei saadeta – teated jõuavad sinu Postkasti.</p>
+        <p className="lede">Vali, milliseid e-kirju soovid saada.</p>
+        <p className="muted small">Prototüübis e-kirju ei saadeta – teated jõuavad sinu postkasti.</p>
       </div>
       <Suspense fallback={<p className="muted" role="status">Laen eelistusi…</p>}>
         <SignedInForm />

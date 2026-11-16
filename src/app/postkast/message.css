@@ -1,0 +1,27 @@
+/* One Postkast message, laid out like an e-mail. */
+.mail-sender { display: flex; align-items: center; gap: 10px; padding-bottom: 12px; border-bottom: 1px solid var(--line); }
+.mail-sender__logo {
+  display: flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: var(--ink);
+  color: var(--white);
+  font: 600 13px/1 var(--serif);
+}
+.mail-sender div { display: flex; flex-direction: column; }
+.mail-sender b { font-size: 14px; font-weight: 600; }
+.mail-sender span { color: var(--ink-soft); font-size: 12px; }
+.mail-text { color: var(--ink-soft); line-height: 1.55; }
+.mail-foot { order: 1; margin-top: 8px; color: var(--ink-soft); font-size: 11px; text-align: center; }
+.mail-foot a { color: inherit; }
+
+@media (max-width: 760px) {
+  .mail-text { font-size: 15px; }
+  /* The note about the list stays above the pinned button. */
+  .mail-foot { order: 0; margin-top: auto; }
+  .screen .mail-foot + .screen__foot { margin-top: 0; }
+}

@@ -1,23 +1,7 @@
-import Link from "next/link";
-import type { ReactNode } from "react";
+import { ScreenFrame, type ScreenProps } from "./ScreenFrame";
+import { SiteHeader } from "./SiteHeader";
 
-type ScreenProps = {
-  title: string;
-  backTo?: string;
-  centered?: boolean;
-  footer?: ReactNode;
-  children: ReactNode;
-};
-
-/** The single-column layout shared by the e-mail, shop and reward screens. */
-export function Screen({ title, backTo, centered, footer, children }: ScreenProps) {
-  return (
-    <div className={centered ? "screen screen--center" : "screen"}>
-      <header className="screen__bar">
-        {backTo ? <Link href={backTo}>‹ {title}</Link> : title}
-      </header>
-      <main className="screen__body">{children}</main>
-      {footer && <footer className="screen__foot">{footer}</footer>}
-    </div>
-  );
+/** A shop, message or reward screen with the site header on top (a message has none). */
+export function Screen(props: ScreenProps) {
+  return <ScreenFrame {...props} header={props.variant === "mail" ? undefined : <SiteHeader />} />;
 }

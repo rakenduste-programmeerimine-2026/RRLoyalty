@@ -1,13 +1,17 @@
 import type { Metadata } from "next";
-import Link from "next/link";
+import Image from "next/image";
 import { connection } from "next/server";
 import { Suspense } from "react";
 import { AccountShell } from "@/components/AccountShell";
+import { EmptyState, LoadError } from "@/components/EmptyState";
+import { Gustav } from "@/components/Gustav";
 import { NotWiredButton } from "@/components/NotWiredButton";
+import { QrCode } from "@/components/QrCode";
 import { getMember } from "@/lib/auth";
 import { getNow } from "@/lib/demo-now";
 import { qrSvg } from "@/lib/qr";
 import { loadWalletCard, type WalletCard } from "@/lib/supabase-wallet-card";
+import "./wallet-card.css";
 
 export const metadata: Metadata = { title: "Wallet-kaart · Minu konto" };
 
@@ -16,10 +20,7 @@ const PATH = "/konto/wallet-kaart";
 export default function WalletCardPage() {
   return (
     <AccountShell current="Wallet-kaart">
-      <div>
-        <h1>Wallet-kaart</h1>
-        <p className="lede">Näita kaarti kassas – punktid ja soodustused arvestatakse automaatselt.</p>
-      </div>
+      <h1>Wallet-kaart</h1>
       <Suspense fallback={<p className="muted" role="status">Laen kliendikaarti…</p>}>
         <Card />
       </Suspense>
@@ -36,23 +37,14 @@ async function Card() {
     card = await loadWalletCard(await getNow());
   } catch (error) {
     console.error("Could not load the wallet card", error);
-    return (
-      <section className="perk" role="alert">
-        <h2>Midagi läks valesti</h2>
-        <p>Kliendikaarti ei õnnestunud laadida. Proovi hetke pärast uuesti.</p>
-        <div className="perk__actions">
-          <Link className="btn btn--auto" href={PATH}>Proovi uuesti</Link>
-        </div>
-      </section>
-    );
+    return <LoadError what="Kliendikaarti" retry={PATH} />;
   }
 
   if (!card?.cardNumber) {
     return (
-      <section className="perk">
-        <h2>Kliendikaart puudub</h2>
-        <p>Sinu kontol pole veel kliendikaarti. Võta ühendust klienditoega.</p>
-      </section>
+      <EmptyState title="Kliendikaart puudub">
+        Sinu kontol pole veel kliendikaarti. Võta ühendust klienditoega.
+      </EmptyState>
     );
   }
 
@@ -62,21 +54,28 @@ async function Card() {
   return (
     <div className="club-card-wrap">
       <section className="club-card" aria-label="Kliendikaart">
+        <Gustav pose="sleeping" alt="Gustav lebab raamatute peal kaardi kohal" className="club-card__gustav" />
         <div className="club-card__top">
-          <span className="club-card__brand">Rahva Raamat</span>
+          <Image className="club-card__logo" src="/assets/rr-logo.png" width={800} height={250} alt="Rahva Raamat" />
           <small>Kliendiklubi</small>
         </div>
         <div className="club-card__body">
           <div>
             <b>{card.name}</b>
             <span>Kaart {card.cardNumber}</span>
-            <span className="club-card__points">Gustavi rada · {card.lapPoints} p</span>
           </div>
-          <div className="club-card__qr" role="img" aria-label={`QR-kood: ${card.cardNumber}`} dangerouslySetInnerHTML={{ __html: qr }} />
+          <QrCode svg={qr} code={card.cardNumber} size="small" />
         </div>
+        <div className="club-card__points"><span>Gustavi rada</span><b>{card.lapPoints} p</b></div>
       </section>
-      {/* Simulated in the prototype: it only shows the message (docs/program-rules.md). */}
-      <NotWiredButton className="btn btn--auto" message="Kaart lisatud walletisse">Lisa walletisse</NotWiredButton>
+      <div className="club-card-side">
+        <p className="muted small">
+          Näita kaarti kassas – punktid ja soodustused arvestatakse automaatselt. Lisa kaart telefoni walletisse,
+          et see oleks alati käepärast.
+        </p>
+        {/* Simulated in the prototype: it only shows the message (docs/program-rules.md). */}
+        <NotWiredButton message="Kaart lisatud walletisse">Lisa walletisse</NotWiredButton>
+      </div>
     </div>
   );
 }

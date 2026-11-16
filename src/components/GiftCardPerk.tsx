@@ -2,6 +2,7 @@
 
 import { useState, useTransition } from "react";
 import { redeemPerkAction } from "@/app/konto/gustavi-rada/actions";
+import { QrCode } from "./QrCode";
 
 type GiftCardPerkProps = {
   /** The perk the card came from: "Märgi kasutatuks" spends it on the server (#14). */
@@ -15,6 +16,7 @@ type GiftCardPerkProps = {
 
 export function GiftCardPerk({ perkId, code, validUntil, qrSvg, used, expired }: GiftCardPerkProps) {
   const [confirming, setConfirming] = useState(false);
+  const [copied, setCopied] = useState(false);
   const [error, setError] = useState<string>();
   const [saving, startSaving] = useTransition();
 
@@ -26,6 +28,15 @@ export function GiftCardPerk({ perkId, code, validUntil, qrSvg, used, expired }:
       if (result?.error) setError(result.error);
       setConfirming(false);
     });
+  }
+
+  async function copyCode() {
+    try {
+      await navigator.clipboard.writeText(code);
+      setCopied(true);
+    } catch {
+      // No clipboard access (an old browser or a blocked permission): the code is on screen to type.
+    }
   }
 
   if (used || expired) {
@@ -41,9 +52,16 @@ export function GiftCardPerk({ perkId, code, validUntil, qrSvg, used, expired }:
   return (
     <>
       <h1>5 € kinkekaart on sinu!</h1>
-      <div className="qr" role="img" aria-label={`QR-kood: ${code}`} dangerouslySetInnerHTML={{ __html: qrSvg }} />
-      <p className="code">{code}</p>
-      <p className="muted small">kehtib kuni {validUntil} · ostul alates 20 €</p>
+      <QrCode svg={qrSvg} code={code} />
+      <div className="gift-card-code">
+        <span className="code">{code}</span>
+        <button type="button" className="copy-btn" aria-label="Kopeeri kood" onClick={copyCode}>
+          {copied ? "Kopeeritud" : "Kopeeri"}
+        </button>
+      </div>
+      <p className="muted small">
+        Kehtib kuni {validUntil} · ostul alates 20 € · kaupluses näita QR-koodi.
+      </p>
       {error && <p className="form-error" role="alert">{error}</p>}
       {confirming ? (
         <div className="confirm" role="group" aria-label="Kinnita kasutamine">

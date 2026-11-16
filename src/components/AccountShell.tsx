@@ -1,52 +1,36 @@
-import Link from "next/link";
-import { Suspense, type ReactNode } from "react";
+import type { ReactNode } from "react";
+import { AccountMenu } from "./AccountMenu";
+import { LogoutButton } from "./LogoutButton";
 import { SiteHeader } from "./SiteHeader";
-import { UnreadBadge } from "./UnreadBadge";
+import "./AccountShell.css";
 
-/**
- * The account menu, in the prototype's order. A page that isn't built yet has
- * no href and shows as plain text until its issue lands (#56–#62).
- */
-const ACCOUNT_PAGES: { label: string; href: string | null }[] = [
-  { label: "Ülevaade", href: "/konto" },
-  { label: "Minu andmed", href: "/konto/andmed" },
-  { label: "Tellimused", href: "/konto/tellimused" },
-  { label: "Gustavi rada", href: "/konto/gustavi-rada" },
-  { label: "Postkast", href: "/postkast" },
-  { label: "Kinkekaardid", href: "/konto/kinkekaardid" },
-  { label: "Annetused", href: "/konto/annetused" },
-  { label: "Wallet-kaart", href: "/konto/wallet-kaart" },
-  { label: "Uudiskirjad", href: "/konto/uudiskirjad" },
-];
+type AccountShellProps = {
+  /** The open page's label in the account menu. Leave it out for a page outside the menu. */
+  current?: string;
+  /** The page's name in the phone breadcrumb, when it is not in the menu. */
+  title?: string;
+  children: ReactNode;
+};
 
 /** The site header, the "Minu konto" menu and the page content beside it. */
-export function AccountShell({ current, children }: { current: string; children: ReactNode }) {
+export function AccountShell({ current, title = current, children }: AccountShellProps) {
   return (
     <>
-      <SiteHeader />
+      <SiteHeader current={current} />
       <div className="account">
         <nav className="side" aria-label="Minu konto">
           <h2>Minu konto</h2>
-          <ul>
-            {ACCOUNT_PAGES.map(({ label, href }) => (
-              <li key={label}>
-                {href ? (
-                  <Link href={href} aria-current={label === current ? "page" : undefined}>
-                    {label}
-                    {href === "/postkast" && (
-                      <Suspense fallback={null}>
-                        <UnreadBadge />
-                      </Suspense>
-                    )}
-                  </Link>
-                ) : (
-                  <span className="side__soon" title="Tuleb peagi">{label}</span>
-                )}
-              </li>
-            ))}
-          </ul>
+          <AccountMenu current={current} />
+          <LogoutButton />
         </nav>
-        <main className="main">{children}</main>
+        <main className="main">
+          {/* On a phone the menu is in the header's drawer, and this line says where you are. */}
+          <p className="crumbs">
+            <span>Minu konto</span>
+            {title && <> <span aria-hidden="true">/</span> <b>{title}</b></>}
+          </p>
+          {children}
+        </main>
       </div>
     </>
   );

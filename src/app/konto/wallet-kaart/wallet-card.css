@@ -1,0 +1,32 @@
+/* Wallet-kaart: the club card with Gustav asleep on its top edge, and the "add to wallet" side. */
+.club-card-wrap { display: flex; flex-wrap: wrap; align-items: flex-start; gap: 32px; }
+.club-card {
+  position: relative;
+  display: flex;
+  flex: 0 1 380px;
+  flex-direction: column;
+  gap: 14px;
+  margin-top: 68px;
+  padding: 20px;
+  border: 2px solid var(--ink);
+  border-radius: var(--radius-l);
+  background: var(--cream);
+}
+.club-card__gustav { position: absolute; top: -61px; right: 14px; width: 120px; }
+.club-card__top { display: flex; align-items: center; justify-content: space-between; padding-right: 124px; }
+.club-card__logo { display: block; width: auto; height: 28px; mix-blend-mode: multiply; }
+.club-card__top small { font-size: 12px; font-weight: 600; }
+.club-card__body { display: flex; align-items: flex-end; justify-content: space-between; gap: 16px; }
+.club-card__body > div:first-child { display: flex; flex-direction: column; gap: 2px; color: var(--ink-soft); font-size: 13px; }
+.club-card__body b { color: var(--ink); font-size: 18px; }
+.club-card__points { display: flex; justify-content: space-between; font-size: 14px; }
+
+.club-card-side { display: flex; flex: 1 1 260px; flex-direction: column; gap: 14px; max-width: 360px; }
+
+@media (max-width: 760px) {
+  .club-card { flex: 1 1 100%; }
+  .club-card-side { max-width: none; }
+}
+@media (max-width: 400px) {
+  .club-card__top { flex-direction: column; align-items: flex-start; gap: 4px; }
+}

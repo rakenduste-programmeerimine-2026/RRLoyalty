@@ -12,6 +12,7 @@ import type { GiftCardRow } from "@/lib/gift-cards";
 import { qrSvg } from "@/lib/qr";
 import { formatDate } from "@/lib/rail-account";
 import { loadGiftCard } from "@/lib/supabase-gift-cards";
+import "../gift-cards.css";
 
 const TITLE = "Kinkekaardid";
 const BACK = "/konto/kinkekaardid";
@@ -45,10 +46,11 @@ async function GiftCardDetails({ params }: { params: Params }) {
     <Screen
       title={TITLE}
       backTo={BACK}
+      variant="card"
       centered
       footer={
         <>
-          <Link className="btn btn--ghost" href={BACK}>Tagasi kinkekaartide juurde</Link>
+          <Link className="btn btn--ghost" href="/konto/gustavi-rada">Tagasi rajale</Link>
           {/* Simulated in the prototype: it only shows the message (docs/program-rules.md). */}
           <NotWiredButton message="Kinkekaart lisatud walletisse">Lisa walletisse</NotWiredButton>
         </>

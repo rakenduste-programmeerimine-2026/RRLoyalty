@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, type FormEvent } from "react";
+import "./newsletters.css";
 
 // The four kinds of email from the prototype. Saving is simulated (decided on
 // #61): nothing is stored and no emails are sent (docs/program-rules.md).
@@ -27,27 +28,26 @@ export function NewsletterForm() {
   return (
     <form className="newsletters" onSubmit={save}>
       <fieldset>
-        <legend className="muted">Vali, milliseid e-kirju soovid saada.</legend>
+        <legend className="visually-hidden">E-kirjad</legend>
         {NEWSLETTERS.map((item) => (
           <label key={item.id} className="toggle-row">
-            <span>
-              <b>{item.label}</b>
-              <small className="muted">{item.description}</small>
-            </span>
             <input
               type="checkbox"
-              role="switch"
               checked={choices[item.id]}
               onChange={(event) => {
                 setChoices({ ...choices, [item.id]: event.target.checked });
                 setSaved(false);
               }}
             />
+            <span>
+              <b>{item.label}</b>
+              <small className="muted">{item.description}</small>
+            </span>
           </label>
         ))}
       </fieldset>
       {saved && <p className="note" role="status">Eelistused salvestatud.</p>}
-      <button type="submit" className="btn btn--auto">Salvesta eelistused</button>
+      <button type="submit" className="btn newsletters__save">Salvesta eelistused</button>
     </form>
   );
 }

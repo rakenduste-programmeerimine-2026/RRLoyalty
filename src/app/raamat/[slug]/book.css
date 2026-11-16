@@ -1,0 +1,29 @@
+/* The book page: the cover beside the details on a wide screen, stacked on a phone. */
+.book { display: flex; flex-wrap: wrap; align-items: flex-start; gap: 40px; }
+.book__cover { position: relative; flex: 0 0 280px; }
+.book__badge {
+  position: absolute;
+  top: 10px;
+  left: 14px;
+  padding: 4px 8px;
+  border-radius: 4px;
+  background: var(--crimson);
+  color: var(--white);
+  font-size: 12px;
+  font-weight: 600;
+}
+.book__details { display: flex; flex: 1 1 360px; flex-direction: column; gap: 12px; max-width: 520px; }
+.book__details h1 { font-size: 30px; }
+.book__price { align-items: baseline; gap: 4px 10px; }
+.book__price s { font-size: 18px; }
+.book__price strong { font-size: 32px; line-height: 1.1; }
+.book__price .tag { align-self: center; }
+
+@media (max-width: 760px) {
+  /* The parts join the screen's own column, so the button pins to the bottom. */
+  .book,
+  .book__details { display: contents; }
+  .book__cover { flex: none; align-self: center; width: 200px; }
+  .book__details h1 { font-size: 24px; }
+  .book__price strong { font-size: 26px; }
+}

@@ -1,3 +1,4 @@
+import "./index.css";
 import Link from "next/link";
 
 const groups = [
@@ -27,7 +28,7 @@ const groups = [
     title: "Konto",
     screens: [
       { href: "/konto/gustavi-rada", label: "Gustavi rada" },
-      { href: "/postkast", label: "Postkast" },
+      { href: "/postkast", label: "Teavitused" },
     ],
   },
 ];

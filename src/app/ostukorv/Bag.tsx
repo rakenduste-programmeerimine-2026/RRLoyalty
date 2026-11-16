@@ -1,20 +1,24 @@
 "use client";
 
 import Link from "next/link";
-import { useRef, useState, useTransition } from "react";
+import { useRef, useState, useTransition, type ReactNode } from "react";
 import { BookCover } from "@/components/BookCover";
-import { Screen } from "@/components/Screen";
+import { Icon } from "@/components/Icon";
+import { ScreenFrame } from "@/components/ScreenFrame";
 import { useCart } from "@/components/useCart";
 import { MAX_QTY, summarizeCart, type CartLine, type PricedCartBook } from "@/lib/cart";
 import { formatEur } from "@/lib/money";
 import { RAIL_END, STOPS, nextStop } from "@/lib/rail";
 import { payForCart, type CheckoutState } from "./actions";
+import "./bag.css";
 
 const lowerFirst = (text: string) => text.charAt(0).toLocaleLowerCase("et") + text.slice(1);
 
 type Order = Extract<CheckoutState, { ok: true }>;
 
 type BagProps = {
+  /** The site header, rendered on the server: it reads the session. */
+  siteHeader: ReactNode;
   /** Every book, priced for the signed-in member on the server. */
   catalog: PricedCartBook[];
   /** The member's points on the current lap. */
@@ -27,7 +31,10 @@ type BagProps = {
 
 type Removed = { line: CartLine; index: number; title: string };
 
-export function Bag({ catalog, lapPoints, firstName, offerLastDay }: BagProps) {
+const TITLE = "Ostukorv";
+const BACK = "/nimekaimud";
+
+export function Bag({ siteHeader, catalog, lapPoints, firstName, offerLastDay }: BagProps) {
   const { lines, setQty, remove, restore, clear } = useCart();
   const [order, setOrder] = useState<Order>();
   const [error, setError] = useState<string>();
@@ -86,33 +93,37 @@ export function Bag({ catalog, lapPoints, firstName, offerLastDay }: BagProps) {
     const lapAfter = (lapPoints + order.points) % RAIL_END;
     const toNext = nextStop(lapAfter);
     return (
-      <Screen
+      <ScreenFrame
+        header={siteHeader}
         title="Tellimus"
+        variant="card"
         footer={
           <>
-            <Link className="textlink" href="/nimekaimud">Jätka ostlemist</Link>
+            <Link className="btn btn--ghost" href="/nimekaimud">Jätka ostlemist</Link>
             <Link className="btn" href="/konto/gustavi-rada">Vaata Gustavi rada</Link>
           </>
         }
       >
-        <h1>{firstName ? `Aitäh, ${firstName}!` : "Aitäh!"}</h1>
-        <p className="muted">Tellimus {order.orderNumber} on vormistatud · {formatEur(order.total)}</p>
+        <span className="order-check" aria-hidden="true"><Icon name="check" size={30} /></span>
+        <h1 className="order-title">{firstName ? `Aitäh, ${firstName}!` : "Aitäh!"}</h1>
+        <p className="muted order-text">Tellimus {order.orderNumber} on vormistatud · {formatEur(order.total)}</p>
         <div className="gain" role="status">
           <b>+{order.points} punkti Gustavi rajale</b>
+          {toNext && <Meter points={lapAfter} goal={toNext.at} />}
           {opened.map((stop) => (
             <p key={stop.at}>Jõudsid {stop.at} punkti peatusse: {lowerFirst(stop.label)}.</p>
           ))}
           {toNext && <p>Veel {toNext.at - lapAfter} punkti ja Gustav jõuab järgmisse peatusse.</p>}
         </div>
-      </Screen>
+      </ScreenFrame>
     );
   }
 
   if (lines === undefined) {
     return (
-      <Screen title="Ostukorv" backTo="/nimekaimud">
+      <ScreenFrame header={siteHeader} title={TITLE} backTo={BACK}>
         <p className="muted" role="status">Laen ostukorvi…</p>
-      </Screen>
+      </ScreenFrame>
     );
   }
 
@@ -120,19 +131,19 @@ export function Bag({ catalog, lapPoints, firstName, offerLastDay }: BagProps) {
 
   if (summary.count === 0) {
     return (
-      <Screen
-        title="Ostukorv"
-        backTo="/nimekaimud"
-        footer={<Link className="btn" href="/nimekaimud">Vaata nimekaimude raamatuid</Link>}
-      >
-        <h1>Ostukorv on tühi</h1>
-        {undo}
-        <p className="muted">
-          {offerLastDay
-            ? "Nimepäeva −10% kehtib ainult täna."
-            : "Lisa raamat, et näha, mitu punkti see Gustavi rajale toob."}
-        </p>
-      </Screen>
+      <ScreenFrame header={siteHeader} title={TITLE} backTo={BACK}>
+        <h1>Ostukorv</h1>
+        <div className="bag-empty">
+          <b>Ostukorv on tühi</b>
+          <span className="muted small">
+            {offerLastDay
+              ? "Nimepäeva −10% kehtib ainult täna."
+              : "Lisa raamat, et näha, mitu punkti see Gustavi rajale toob."}
+          </span>
+          {undo}
+          <Link className="textlink" href="/nimekaimud">Vaata nimekaimude raamatuid</Link>
+        </div>
+      </ScreenFrame>
     );
   }
 
@@ -141,76 +152,88 @@ export function Bag({ catalog, lapPoints, firstName, offerLastDay }: BagProps) {
   const goal = next?.at ?? RAIL_END;
 
   return (
-    <Screen
-      title="Ostukorv"
-      backTo="/nimekaimud"
-      footer={
-        <>
-          <Link className="textlink" href="/konto/gustavi-rada">Vaata Gustavi rada</Link>
-          {error && <p className="form-error" role="alert">{error}</p>}
-          <button type="button" className="btn" disabled={paying} onClick={() => pay(lines)}>
-            {paying ? "Maksan…" : `Maksa ${formatEur(summary.total)}`}
-          </button>
-        </>
-      }
-    >
-      {summary.items.map(({ book, qty }) => (
-        <div key={book.slug} className="cart-line">
-          <BookCover book={book} size="grid" />
-          <div>
-            <b>{book.title}</b>
-            <span className="muted">{book.author} · {qty} tk</span>
-            <div className="cart-line__qty">
-              <button
-                type="button"
-                aria-label={`Vähenda: ${book.title}`}
-                disabled={qty <= 1}
-                onClick={() => setQty(book.slug, qty - 1)}
-              >
-                −
-              </button>
-              <span aria-live="polite">{qty}</span>
-              <button
-                type="button"
-                aria-label={`Suurenda: ${book.title}`}
-                disabled={qty >= MAX_QTY}
-                onClick={() => setQty(book.slug, qty + 1)}
-              >
-                +
-              </button>
-              <button type="button" className="textlink" onClick={() => removeLine(book.slug, book.title)}>
-                Eemalda
-              </button>
+    <ScreenFrame header={siteHeader} title={TITLE} backTo={BACK}>
+      <h1>Ostukorv</h1>
+      <div className="bag">
+        <div className="bag__lines">
+          {summary.items.map(({ book, qty }) => (
+            <div key={book.slug} className="cart-line">
+              <BookCover book={book} size="thumb" />
+              <div className="cart-line__info">
+                <b>{book.title}</b>
+                <span className="muted">{book.author}</span>
+                <span className="price">
+                  {book.discounted < book.price && <s>{formatEur(book.price)}</s>}
+                  <strong>{formatEur(book.discounted)}</strong>
+                </span>
+                <div className="cart-line__actions">
+                  <div className="stepper" role="group" aria-label="Kogus">
+                    <button
+                      type="button"
+                      aria-label={`Vähenda: ${book.title}`}
+                      disabled={qty <= 1}
+                      onClick={() => setQty(book.slug, qty - 1)}
+                    >
+                      −
+                    </button>
+                    <span aria-live="polite">{qty}</span>
+                    <button
+                      type="button"
+                      aria-label={`Suurenda: ${book.title}`}
+                      disabled={qty >= MAX_QTY}
+                      onClick={() => setQty(book.slug, qty + 1)}
+                    >
+                      +
+                    </button>
+                  </div>
+                  <button type="button" className="textlink" onClick={() => removeLine(book.slug, book.title)}>
+                    Eemalda
+                  </button>
+                </div>
+              </div>
             </div>
+          ))}
+          {undo}
+          <div className="gain">
+            <b>+{summary.earned} punkti Gustavi rajale</b>
+            <Meter points={pointsAfter} goal={goal} />
+            <p>
+              {next
+                ? `Pärast ostu: ${pointsAfter} punkti. Veel ${next.at - pointsAfter} € ja jõuad järgmise peatusse: ${lowerFirst(next.label)}.`
+                : `Pärast ostu: ${pointsAfter} punkti. Jõuad raja lõppu ja alustad uut ringi.`}
+            </p>
           </div>
         </div>
-      ))}
-      {undo}
-      <div className="sum">
-        <div><span>Hind</span><span>{formatEur(summary.listTotal)}</span></div>
-        {summary.discount > 0 && (
-          <div className="saving">
-            <span>Nimepäeva soodustus −10%</span>
-            <span>−{formatEur(summary.discount)}</span>
+        <aside className="bag__summary">
+          <div className="sum">
+            <div><span>Hind</span><span>{formatEur(summary.listTotal)}</span></div>
+            {summary.discount > 0 && (
+              <div className="saving">
+                <span>Nimepäeva soodustus −10%</span>
+                <span>−{formatEur(summary.discount)}</span>
+              </div>
+            )}
+            <div><span>Tarne</span><span className="muted">Vali järgmises sammus</span></div>
+            <div className="total"><span>Kokku</span><span>{formatEur(summary.total)}</span></div>
           </div>
-        )}
-        <div><span>Tarne</span><span className="muted">Vali järgmises sammus</span></div>
-        <div className="total"><span>Kokku</span><span>{formatEur(summary.total)}</span></div>
-      </div>
-      <div className="gain">
-        <b>+{summary.earned} punkti Gustavi rajale</b>
-        <div className="gain__meter">
-          <div className="meter">
-            <span style={{ width: `${Math.min(pointsAfter / goal, 1) * 100}%` }} />
+          <div className="screen__foot">
+            {error && <p className="form-error" role="alert">{error}</p>}
+            <button type="button" className="btn" disabled={paying} onClick={() => pay(lines)}>
+              {paying ? "Maksan…" : `Maksa ${formatEur(summary.total)}`}
+            </button>
           </div>
-          <span>{pointsAfter} / {goal}</span>
-        </div>
-        <p>
-          {next
-            ? `Pärast ostu: ${pointsAfter} punkti. Veel ${next.at - pointsAfter} € ja jõuad järgmise peatusse: ${lowerFirst(next.label)}.`
-            : `Pärast ostu: ${pointsAfter} punkti. Jõuad raja lõppu ja alustad uut ringi.`}
-        </p>
+        </aside>
       </div>
-    </Screen>
+    </ScreenFrame>
+  );
+}
+
+/** The bar towards the next stop, with "70 / 100" beside it. */
+function Meter({ points, goal }: { points: number; goal: number }) {
+  return (
+    <div className="gain__meter">
+      <progress className="gain__bar" max={goal} value={Math.min(points, goal)} aria-label="Punktid järgmise peatuseni" />
+      <span>{points} / {goal}</span>
+    </div>
   );
 }

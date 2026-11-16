@@ -10,6 +10,7 @@ export default function Donation() {
     <Screen
       title="Gustavi rada"
       backTo="/konto/gustavi-rada"
+      variant="card"
       centered
       footer={
         <>
@@ -19,7 +20,7 @@ export default function Donation() {
         </>
       }
     >
-      <GustavScene variant="books" label="Gustav istub raamatuhunnikul" />
+      <GustavScene pose="sleeping" label="Gustav raamatuvirnal" />
       <h1>Aitäh!</h1>
       <Suspense fallback={<p>Sinu 5 € läheb kooliraamatukogule.</p>}>
         <DonationTarget />

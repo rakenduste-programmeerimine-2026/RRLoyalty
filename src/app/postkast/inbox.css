@@ -1,0 +1,23 @@
+/* Teavitused: the list of Postkast messages. */
+.inbox { display: flex; flex-direction: column; gap: 12px; max-width: 720px; }
+.inbox-bar { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px 16px; min-height: 44px; }
+.inbox-bar form { margin: 0; }
+.inbox-bar .textlink,
+.inbox__manage { font-size: 13px; font-weight: 500; }
+.inbox__manage { align-self: flex-start; }
+
+.message-list { overflow: hidden; border: 1px solid var(--line-strong); border-radius: var(--radius-s); background: var(--white); }
+.message-list li { border-bottom: 1px solid var(--line); }
+.message-list li:last-child { border-bottom: 0; }
+.message-list a { display: flex; align-items: flex-start; gap: 12px; padding: 14px 16px; color: var(--ink); text-decoration: none; }
+.message-list a:hover b { text-decoration: underline; }
+.message-list__dot { flex: none; width: 8px; height: 8px; margin-top: 7px; border-radius: 50%; }
+.message-list__text { display: flex; flex: 1; flex-direction: column; gap: 3px; min-width: 0; }
+.message-list__text b { font-size: 15px; font-weight: 500; }
+.message-list__text span { color: var(--ink-soft); font-size: 13px; }
+.message-list__text small { color: var(--ink-soft); font-size: 12px; }
+.message-list__open { color: var(--teal); font-size: 13px; font-weight: 600; white-space: nowrap; }
+
+.message-list__unread a { background: var(--sky); }
+.message-list__unread .message-list__dot { background: var(--crimson); }
+.message-list__unread b { font-weight: 700; }

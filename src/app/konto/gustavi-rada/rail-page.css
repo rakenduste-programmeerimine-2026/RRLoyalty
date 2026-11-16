@@ -1,0 +1,69 @@
+/* The Gustavi rada page: the new-message banner, open perks, stats and the two panels under the rail. */
+.mail-banner {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 18px;
+  border: 2px solid var(--teal);
+  border-radius: var(--radius-m);
+  background: var(--sky);
+  color: var(--ink);
+  text-decoration: none;
+}
+.mail-banner:hover { background: var(--white); }
+.mail-banner__text { display: flex; flex: 1; flex-direction: column; gap: 2px; min-width: 0; }
+.mail-banner__text small { color: var(--ink-soft); font-size: 12px; }
+.mail-banner__text b { font-size: 15px; font-weight: 600; }
+.mail-banner__open { color: var(--teal); font-size: 14px; font-weight: 600; white-space: nowrap; }
+
+.perk-rows { display: flex; flex-wrap: wrap; gap: 10px; }
+
+.stats { display: flex; flex-wrap: wrap; gap: 10px; }
+.stat {
+  flex: 1 1 160px;
+  padding: 10px 14px;
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius-m);
+  background: var(--white);
+}
+.stat b { display: block; font-size: 18px; font-weight: 700; }
+.stat span { color: var(--ink-soft); font-size: 12px; }
+
+.rail-panels { display: flex; flex-wrap: wrap; align-items: flex-start; gap: 20px; }
+.history,
+.how {
+  display: flex;
+  flex: 1 1 340px;
+  flex-direction: column;
+  padding: 16px 20px;
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius-m);
+  background: var(--white);
+}
+.history h2,
+.how h2 { font: 600 16px/1.3 var(--sans); letter-spacing: 0; }
+.history__head { display: flex; align-items: center; justify-content: space-between; min-height: 44px; }
+.history__head .textlink { font-size: 13px; font-weight: 400; }
+.history ul { font-size: 14px; }
+.history li { display: flex; gap: 12px; padding: 10px 0; border-bottom: 1px solid var(--line); }
+.history li:last-child { border-bottom: 0; }
+.history time { width: 56px; color: var(--ink-soft); }
+.history li span { flex: 1; }
+.history li b { color: var(--teal); font-weight: 700; }
+.how { gap: 8px; }
+.how p { color: var(--ink-soft); font-size: 14px; line-height: 1.55; }
+
+@media (max-width: 760px) {
+  .mail-banner { gap: 12px; padding: 12px 14px; }
+  .mail-banner__text b { font-size: 14px; }
+  .mail-banner__open { font-size: 0; }
+  .mail-banner__open::after { content: "›"; font-size: 20px; }
+  .perk-rows { flex-direction: column; gap: 8px; }
+  .stats { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
+  .stat { padding: 8px 10px; }
+  .stat b { font-size: 15px; }
+  .stat span { font-size: 11px; }
+  .history,
+  .how { flex-basis: auto; padding: 16px; }
+  .history ul { font-size: 13px; }
+}

@@ -1,6 +1,7 @@
 import { connection } from "next/server";
 import { Suspense } from "react";
 import { ShopError, ShopLoading } from "@/components/ShopError";
+import { SiteHeader } from "@/components/SiteHeader";
 import { getMember } from "@/lib/auth";
 import { getNow } from "@/lib/demo-now";
 import { formatDayEt, type Shop } from "@/lib/namesakes";
@@ -43,6 +44,7 @@ async function PricedBag() {
 
   return (
     <Bag
+      siteHeader={<SiteHeader />}
       catalog={catalog}
       lapPoints={shop.lapPoints}
       firstName={shop.firstName}

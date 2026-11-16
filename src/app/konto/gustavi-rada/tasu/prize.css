@@ -1,0 +1,19 @@
+/* Vali tasu. The form's parts sit straight in the screen's column, so its button pins to the bottom on a phone. */
+.prize { display: contents; }
+.prize fieldset { display: grid; gap: 10px; margin: 0; padding: 0; border: 0; }
+.choice {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 14px;
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius-s);
+  background: var(--white);
+  color: var(--ink-soft);
+  font-size: 13px;
+  line-height: 1.4;
+  cursor: pointer;
+}
+.choice:has(input:checked) { padding: 13px; border: 2px solid var(--teal); background: var(--sky); }
+.choice input { flex: none; width: 20px; height: 20px; margin: 2px 0 0; accent-color: var(--teal); }
+.choice b { display: block; color: var(--ink); font-size: 15px; font-weight: 600; }

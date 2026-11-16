@@ -1,0 +1,18 @@
+/* Minu andmed */
+.profile-form { display: flex; flex-direction: column; gap: 20px; max-width: 720px; }
+.profile-form__fields { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 16px 20px; }
+.profile-form__save { max-width: 240px; }
+.profile-facts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 24px;
+  padding: 12px 16px;
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius-s);
+  background: var(--sky);
+  font-size: 14px;
+}
+
+@media (max-width: 760px) {
+  .profile-form__save { max-width: none; }
+}

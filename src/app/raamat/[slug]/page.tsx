@@ -11,6 +11,7 @@ import { formatEur } from "@/lib/money";
 import type { Shop } from "@/lib/namesakes";
 import { pointsForPurchase } from "@/lib/points";
 import { loadShopFromSupabase } from "@/lib/supabase-shop-store";
+import "./book.css";
 
 export const instant = false;
 
@@ -46,25 +47,35 @@ async function BookDetails({ params }: { params: Params }) {
   const discounted = book.discounted < book.price;
 
   return (
-    <Screen title={TITLE} backTo={BACK} footer={<AddToCartButton slug={book.slug} />}>
-      <BookCover book={book} size="large" />
-      <h1>{book.title}</h1>
-      <p className="muted">{book.author}{book.format === "ebook" ? " · e-raamat" : ""}</p>
-      {discounted ? (
-        <>
-          <p className="price">
-            <s>{formatEur(book.price)}</s>
-            <strong>{formatEur(book.discounted)}</strong>
-            <span className="tag">Nimepäeva −10%</span>
+    <Screen title={TITLE} backTo={BACK}>
+      <div className="book">
+        <div className="book__cover">
+          <BookCover book={book} size="large" />
+          {discounted && <span className="book__badge">−10%</span>}
+        </div>
+        <div className="book__details">
+          <h1>{book.title}</h1>
+          <p className="muted">{book.author}{book.format === "ebook" ? " · e-raamat" : ""}</p>
+          {discounted ? (
+            <>
+              <p className="price book__price">
+                <s>{formatEur(book.price)}</s>
+                <strong>{formatEur(book.discounted)}</strong>
+                <span className="tag">Nimepäev −10%</span>
+              </p>
+              <p className="muted small">Soodushind kehtib sisselogituna ja kassas klubikaardiga.</p>
+            </>
+          ) : (
+            <p className="price book__price"><strong>{formatEur(book.price)}</strong></p>
+          )}
+          <p className="note">
+            <b>+{pointsForPurchase(book.discounted)} punkti</b> Gustavi rajale
           </p>
-          <p className="muted small">Soodushind kehtib sisselogituna ja kassas klubikaardiga.</p>
-        </>
-      ) : (
-        <p className="price"><strong>{formatEur(book.price)}</strong></p>
-      )}
-      <p className="gain">
-        <span><b>+{pointsForPurchase(book.discounted)} punkti</b> Gustavi rajale</span>
-      </p>
+          <div className="screen__foot">
+            <AddToCartButton slug={book.slug} price={formatEur(book.discounted)} />
+          </div>
+        </div>
+      </div>
     </Screen>
   );
 }

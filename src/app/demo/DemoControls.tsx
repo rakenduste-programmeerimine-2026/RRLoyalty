@@ -30,9 +30,9 @@ export function DemoControls({ purchaseRef, demoDateSet }: { purchaseRef: string
 
   return (
     <div className="demo-controls">
-      <section className="perk">
+      <section className="panel">
         <h2>Lisa ost</h2>
-        <form action={purchaseAction} className="profile-form">
+        <form action={purchaseAction} className="form-stack">
           <input type="hidden" name="ref" value={purchase.nextRef} />
           <label className="field">
             <span>Müügikanal</span>
@@ -59,10 +59,10 @@ export function DemoControls({ purchaseRef, demoDateSet }: { purchaseRef: string
         </form>
       </section>
 
-      <section className="perk">
+      <section className="panel">
         <h2>Nimepäev ja sünnipäev</h2>
         <p>Viib demo kuupäeva sinu järgmisele nimepäevale või sünnipäevale. Sünnipäeval antakse 5 € sünnipäevakaart.</p>
-        <div className="perk__actions">
+        <div className="panel__actions">
           <form action={nameDayAction}>
             <button type="submit" className="btn btn--auto" disabled={namingDay}>
               {namingDay ? "Käivitan…" : "Käivita nimepäev"}
@@ -78,10 +78,10 @@ export function DemoControls({ purchaseRef, demoDateSet }: { purchaseRef: string
         <Result state={birthday} />
       </section>
 
-      <section className="perk">
+      <section className="panel">
         <h2>Keri aega edasi</h2>
         <p>Auhinna valikuks on 3 päeva. Punktid aeguvad 6 kuud pärast viimast ostu.</p>
-        <form action={skipAction} className="perk__actions">
+        <form action={skipAction} className="panel__actions">
           <button type="submit" name="skip" value="3d" className="btn btn--auto" disabled={skipping}>
             +3 päeva
           </button>
@@ -91,7 +91,7 @@ export function DemoControls({ purchaseRef, demoDateSet }: { purchaseRef: string
         </form>
         <Result state={skip} />
         {demoDateSet && (
-          <form action={resetAction} className="perk__actions">
+          <form action={resetAction} className="panel__actions">
             <button type="submit" className="btn btn--ghost btn--auto" disabled={resetting}>
               Tagasi tänasesse
             </button>

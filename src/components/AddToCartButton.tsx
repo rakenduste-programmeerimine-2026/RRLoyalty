@@ -3,7 +3,8 @@
 import { useRouter } from "next/navigation";
 import { useCart } from "./useCart";
 
-export function AddToCartButton({ slug }: { slug: string }) {
+/** `price` is the formatted price the member pays, shown on the button. */
+export function AddToCartButton({ slug, price }: { slug: string; price?: string }) {
   const router = useRouter();
   const { add } = useCart();
 
@@ -16,7 +17,7 @@ export function AddToCartButton({ slug }: { slug: string }) {
         router.push("/ostukorv");
       }}
     >
-      Lisa ostukorvi
+      Lisa ostukorvi{price ? ` · ${price}` : ""}
     </button>
   );
 }

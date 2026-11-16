@@ -1,6 +1,8 @@
 "use client";
 
 import { useEffect, useState, type ReactNode } from "react";
+import { Icon } from "./Icon";
+import "./Toast.css";
 
 type NotWiredButtonProps = {
   className?: string;
@@ -18,7 +20,7 @@ export function NotWiredButton({ className = "btn", message = "Seda veel pole", 
 
   useEffect(() => {
     if (!showNotice) return;
-    const timer = setTimeout(() => setShowNotice(false), 2000);
+    const timer = setTimeout(() => setShowNotice(false), 4000);
     return () => clearTimeout(timer);
   }, [showNotice]);
 
@@ -27,7 +29,14 @@ export function NotWiredButton({ className = "btn", message = "Seda veel pole", 
       <button type="button" className={className} onClick={() => setShowNotice(true)}>
         {children}
       </button>
-      {showNotice && <div className="toast" role="status">{message}</div>}
+      {showNotice && (
+        <div className="toast" role="status">
+          <span>{message}</span>
+          <button type="button" className="toast__close" aria-label="Sulge teade" onClick={() => setShowNotice(false)}>
+            <Icon name="close" size={18} />
+          </button>
+        </div>
+      )}
     </>
   );
 }

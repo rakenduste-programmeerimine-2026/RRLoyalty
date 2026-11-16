@@ -18,7 +18,7 @@ const time = new Intl.DateTimeFormat("et-EE", { timeZone: "Europe/Tallinn", hour
 
 export default function ChoosePrize() {
   return (
-    <Suspense fallback={<ShopLoading title={TITLE} backTo={BACK} text="Laen sinu tasu…" />}>
+    <Suspense fallback={<ShopLoading title={TITLE} backTo={BACK} text="Laen sinu tasu…" variant="card" />}>
       <OpenPrizeForm />
     </Suspense>
   );
@@ -39,7 +39,12 @@ async function OpenPrizeForm() {
 
   if (!prize) {
     return (
-      <Screen title={TITLE} backTo={BACK} footer={<Link className="btn" href={BACK}>Vaata Gustavi rada</Link>}>
+      <Screen
+        title={TITLE}
+        backTo={BACK}
+        variant="card"
+        footer={<Link className="btn" href={BACK}>Vaata Gustavi rada</Link>}
+      >
         <h1>Praegu pole tasu valida</h1>
         <p className="muted">
           Tasu saad valida, kui jõuad 100, 200, 300 või 400 punkti peatusse. Kui valimise aeg sai läbi, leiad oma
@@ -51,16 +56,13 @@ async function OpenPrizeForm() {
   }
 
   return (
-    <div className="screen">
-      <header className="screen__bar">
-        <Link href={BACK}>‹ {TITLE}</Link>
-      </header>
+    <Screen title={TITLE} backTo={BACK} variant="card">
       <PrizeForm
         perkId={prize.perkId}
         stop={prize.stopAt}
         chooseBy={`${formatDate(prize.chooseBy)} ${time.format(prize.chooseBy)}`}
         school={school}
       />
-    </div>
+    </Screen>
   );
 }

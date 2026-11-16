@@ -1,0 +1,35 @@
+/* Sinu nimekaimud: the offer, the format chips and the book grid. */
+.namesakes-bar { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; }
+.namesakes-offer {
+  padding: 10px 14px;
+  border: 2px solid var(--crimson);
+  border-radius: var(--radius-s);
+  color: var(--crimson);
+  font-size: 14px;
+  font-weight: 600;
+}
+.chips { display: flex; gap: 8px; }
+.chips a {
+  display: flex;
+  align-items: center;
+  min-height: 36px;
+  padding: 0 14px;
+  border: 1px solid var(--line-strong);
+  border-radius: 18px;
+  background: var(--white);
+  color: var(--ink);
+  font-size: 13px;
+  font-weight: 500;
+  text-decoration: none;
+}
+.chips a[aria-current] { border-color: var(--teal); background: var(--teal); color: var(--white); }
+
+.book-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 24px 20px; }
+.book-card { display: flex; flex-direction: column; gap: 4px; color: var(--ink); font-size: 14px; line-height: 1.35; text-decoration: none; }
+.book-card:hover b { color: var(--teal); }
+.book-card b { margin-top: 6px; font-family: var(--serif); font-size: 15px; font-weight: 600; }
+.book-card .muted { font-size: 13px; }
+
+@media (max-width: 760px) {
+  .book-grid { grid-template-columns: 1fr 1fr; gap: 20px 14px; }
+}

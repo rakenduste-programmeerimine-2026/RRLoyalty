@@ -1,0 +1,20 @@
+.reward-row {
+  display: flex;
+  flex: 1 1 300px;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius-m);
+  background: var(--white);
+  color: var(--ink);
+}
+.reward-row--strong { border: 2px solid var(--teal); background: var(--sky); }
+.reward-row--past { opacity: 0.6; }
+.reward-row__text { display: flex; flex: 1; flex-direction: column; gap: 1px; min-width: 0; }
+.reward-row__text b { font-size: 14px; font-weight: 600; }
+.reward-row__text span { color: var(--ink-soft); font-size: 12px; }
+
+@media (max-width: 760px) {
+  .reward-row { flex-basis: auto; padding: 10px 12px; }
+}

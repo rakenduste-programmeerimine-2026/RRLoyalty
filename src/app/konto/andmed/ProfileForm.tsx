@@ -1,6 +1,6 @@
 "use client";
 
-import { useActionState } from "react";
+import { useActionState, type ReactNode } from "react";
 import { saveProfile, type ProfileFormState } from "./actions";
 
 type ProfileFormProps = {
@@ -9,6 +9,8 @@ type ProfileFormProps = {
   email: string;
   phone: string;
   birthday: string;
+  /** The name-day and membership facts, shown between the fields and the button. */
+  children: ReactNode;
 };
 
 export function ProfileForm(props: ProfileFormProps) {
@@ -19,6 +21,7 @@ export function ProfileForm(props: ProfileFormProps) {
 
   return (
     <form action={action} className="profile-form" noValidate>
+      <div className="profile-form__fields">
       <label className="field">
         <span>Eesnimi</span>
         <input value={props.firstName} readOnly aria-describedby="first-name-note" />
@@ -31,12 +34,14 @@ export function ProfileForm(props: ProfileFormProps) {
       </label>
       <Field name="phone" label="Telefon" type="tel" defaultValue={typed?.phone ?? props.phone} autoComplete="tel" error={errors.phone} />
       <Field name="birthday" label="Sünnipäev" type="date" defaultValue={typed?.birthday ?? props.birthday} autoComplete="bday" error={errors.birthday} />
+      </div>
+      {props.children}
 
       {state.status === "saved" && <p className="note" role="status">Andmed salvestatud.</p>}
       {state.status === "failed" && (
         <p className="form-error" role="alert">Salvestamine ebaõnnestus. Proovi hetke pärast uuesti.</p>
       )}
-      <button type="submit" className="btn btn--auto" disabled={pending}>
+      <button type="submit" className="btn profile-form__save" disabled={pending}>
         {pending ? "Salvestan…" : "Salvesta"}
       </button>
     </form>

@@ -12,7 +12,8 @@
   border-radius: var(--radius-l);
   background: var(--cream);
 }
-.club-card__gustav { position: absolute; top: -61px; right: 14px; width: 120px; }
+/* Two classes, so the width beats .gustav's "width: auto" whichever stylesheet loads last. */
+.club-card .club-card__gustav { position: absolute; top: -61px; right: 14px; width: 120px; }
 .club-card__top { display: flex; align-items: center; justify-content: space-between; padding-right: 124px; }
 .club-card__logo { display: block; width: auto; height: 28px; mix-blend-mode: multiply; }
 .club-card__top small { font-size: 12px; font-weight: 600; }

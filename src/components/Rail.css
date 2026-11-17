@@ -125,6 +125,8 @@
   .rail__points { grid-area: 2 / 1; padding: 2px 6px; }
   .rail__pointer { grid-area: 1 / 2 / 3 / 3; border: 6px solid transparent; border-right: 0; border-left: 7px solid var(--ink); }
 
+  /* Positioned, so the stops paint above the line and their circles cover it. */
+  .rail__stops { position: relative; }
   .stop { position: static; flex-direction: row; gap: 14px; width: auto; height: 64px; text-align: left; transform: none; }
   .stop__text { flex: 1; gap: 0; }
   .stop__label { font-size: 14px; }

@@ -13,10 +13,11 @@
 }
 .empty-state h2 { font-size: 18px; }
 .empty-state p { max-width: 420px; color: var(--ink-soft); font-size: 14px; }
-.empty-state__gustav { position: absolute; bottom: 20px; left: 0; height: 90px; }
+/* Two classes, so the height beats .gustav's "height: auto" whichever stylesheet loads last. */
+.empty-state .empty-state__gustav { position: absolute; bottom: 20px; left: 0; height: 90px; }
 
 @media (max-width: 760px) {
   .empty-state { padding: 32px 20px; }
   .empty-state--gustav { padding-left: 56px; }
-  .empty-state__gustav { height: 72px; }
+  .empty-state .empty-state__gustav { height: 72px; }
 }
